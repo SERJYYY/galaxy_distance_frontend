@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Breadcrumbs } from "../components/Breadcrumbs";
-import { getGalaxyById } from "../api/galaxiesApi"; // твоя функция для API-запроса
-import defaultImage from "../assets/default_galaxy.png"; // дефолтное изображение
+import { getGalaxyById } from "../api/galaxiesApi";
+import galaxyVideo from "../assets/galaxy_video.mp4";
 import type { Galaxy } from "../api/galaxiesApi";
+import defaultImage from "../assets/default_galaxy.png";
+
+
 
 export const GalaxyDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,8 +21,7 @@ export const GalaxyDetailPage: React.FC = () => {
         const data = await getGalaxyById(Number(id));
         setGalaxy(data);
       } catch (err) {
-        console.error(err);
-        setError("Галактика не найдена 😔");
+        setError("Галактика не найдена");
       } finally {
         setLoading(false);
       }
@@ -31,18 +33,8 @@ export const GalaxyDetailPage: React.FC = () => {
   if (loading) return <p>Загрузка...</p>;
   if (error)
     return (
-      <div className="not-found-message">
-        <h2>{error}</h2>
-        <Link to="/galaxies" className="btn">
-          Вернуться к списку галактик
-        </Link>
-      </div>
-    );
-
-  if (!galaxy)
-    return (
-      <div className="not-found-message">
-        <h2>Галактика не найдена 😔</h2>
+      <div>
+        <p>{error}</p>
         <Link to="/galaxies" className="btn">
           Вернуться к списку галактик
         </Link>
@@ -56,19 +48,32 @@ export const GalaxyDetailPage: React.FC = () => {
         paths={[
           { name: "Главная", link: "/" },
           { name: "Список галактик", link: "/galaxies" },
-          { name: galaxy.name },
+          { name: galaxy?.name || "" },
         ]}
       />
 
-      <h1 className="page-title">{galaxy.name}</h1>
+      <h1 className="page-title">{galaxy?.name}</h1>
 
-      <div className="galaxy-detail-card">
+      {/* Карточка галактики */}
+      <div className="galaxy-detail-card portrait">
         <img
           className="galaxy-detail-image"
-          src={galaxy.image_url || defaultImage}
-          alt={galaxy.name}
+          src={galaxy?.image_url || defaultImage}
+          alt={galaxy?.name}
         />
-        <div className="description-box">{galaxy.description}</div>
+        <div className="description-box">{galaxy?.description}</div>
+      </div>
+
+      {/* Видео под карточкой */}
+      <div className="galaxy-video-wrapper">
+        <video
+          src={galaxyVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="galaxy-video"
+        />
       </div>
     </div>
   );
