@@ -1,0 +1,512 @@
+.breadcrumbs {
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.breadcrumbs span {
+    margin-right: 5px;
+}
+
+.breadcrumbs a {
+    text-decoration: none;
+    color: #5e2ec8;
+    transition: opacity 0.2s ease;
+}
+
+.breadcrumbs a:hover {
+    opacity: 0.8;
+}
+
+.breadcrumbs-separator {
+    margin: 0 5px;
+    color: #999;
+} 
+
+
+.btn-home {
+    display: inline-block;         /* чтобы ширина соответствовала содержимому */
+    padding: 10px 20px;            /* чуть больше текста */
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    background-color: #5e2ec8;     /* такой же цвет, как у кнопок карточек */
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    transition: opacity 0.2s ease;
+}
+
+.btn-home:hover {
+    /*opacity: 0.9;*/
+    background-color: rgb(70, 22, 133);
+} 
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif; 
+    background-color: #f5f5f7;
+}
+
+/* Фиолетовая шапка */
+.top-bar {
+    width: 100%;
+    height: 84px;
+    background-color: #4905A0;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1000;
+}
+
+.home-button {
+    display: inline-block;
+    padding: 10px;
+    border-radius: 12px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    text-decoration: none;
+    margin: 0 20px;
+}
+
+.home-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.home-button .home-icon {
+    width: 60px;
+    height: 60px;
+    display: block;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.home-button:hover .home-icon {
+    transform: scale(1.05);
+}
+
+/* Заголовок страницы */
+.page-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin: 20px 0;
+    padding: 0;
+}
+
+/* Поиск */
+.search-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.search-input:focus,
+.search-input:hover {
+    border-color: #5e2ec8;
+}
+
+.search-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 2px solid #5e2ec8;
+    background-color: #5e2ec8;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: opacity 0.2s ease;
+}
+
+.search-btn:hover {
+    opacity: 0.9;
+    background-color: rgb(70, 22, 133);
+}
+
+.galaxy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.galaxy-card {
+    background-color: #E7E5EF;
+    border-radius: 20px;
+    padding: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+    height: 300px;
+}
+
+.galaxy-card:hover {
+    transform: translateY(-2px);
+}
+
+.galaxy-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+.galaxy-name {
+    margin: 8px 0;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    flex: 1;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-wrapper {
+    flex: 1; /* равномерное распределение между обёртками */
+    display: block;
+}
+
+.card-btn {
+    display: block;
+    box-sizing: border-box;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    background-color: #5e2ec8;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    transition: opacity 0.2s ease;
+    width: 100%; /* растягиваем на всю ширину родителя */
+    min-width: 100px; /* чтобы не было слишком узких кнопок */
+}
+
+.card-btn:hover {
+    /*opacity: 0.9;*/
+    background-color: rgb(70, 22, 133);
+}
+
+/* Калькулятор */
+.calculator-container {
+    position: absolute; 
+    bottom: 40px; 
+    right: 40px; 
+    z-index: 100; 
+}
+
+.calculator-link {
+    display: inline-block;
+    position: relative; 
+}
+
+.calculator {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    transition: transform 0.2s ease;
+}
+
+.calculator:hover {
+    transform: scale(1.05);
+}
+
+.badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #5e2ec8;
+    color: white;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    z-index: 10;
+}
+
+/* Карточка детальной страницы */
+.galaxy-detail-card {
+    background-color: #E7E5EF;
+    border: 2px solid #5e2ec8; 
+    border-radius: 12px;
+    padding: 40px;
+    margin: 40px auto;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.galaxy-detail-image {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin: 0 auto 20px;
+    display: block;
+}
+
+.description-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.not-found-message {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    margin: 40px auto;
+    max-width: 800px;
+}
+
+.not-found-message h2 {
+    color: #5e2ec8;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+
+.not-found-message .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #5e2ec8;
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-size: 16px;
+}
+
+.not-found-message .btn:hover {
+    opacity: 0.9;
+}
+
+/* Заголовок заявки */
+.request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px auto 40px;
+    padding: 20px;
+    background-color: #f5f5f7;
+    border-radius: 12px;
+    gap: 60px;
+    max-width: 800px;
+}
+
+.header-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.header-item strong {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.tel-name,
+.date {
+    font-size: 16px;
+    color: #333;
+    background-color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    min-width: 120px;
+    text-align: center;
+}
+
+/* ========== Заголовки столбцов ========== */
+.request-headers {
+    display: flex;
+    justify-content: flex-end; /* заголовки выравниваем к правой стороне */
+    align-items: center;
+    padding: 10px 400px;
+    background-color: #f5f5f7;
+    border-radius: 8px;
+    margin: 0 20px 10px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.header-col {
+    flex: 0 0 150px;
+}
+
+.header-col.magnitude {
+    text-align: center;  /* по центру */
+}
+
+.header-col.distance {
+    text-align: right;
+    padding-left: 60px;
+    padding-right: 100px;
+}
+
+
+/* Небольшая адаптивность: на узких экранах уменьшаем сдвиг и ширины колонок */
+@media (max-width: 600px) {
+    .request-headers {
+        padding-left: 16px;   /* убираем большой сдвиг на мобильных */
+        padding-right: 16px;
+    }
+    .header-col.name { flex: 0 0 120px; }
+    .header-col.magnitude { flex: 0 0 120px; }
+    .header-col.distance { flex: 0 0 120px; }
+    .galaxy-request-name { flex: 0 0 120px; }
+    .col.magnitude, .col.distance { width: 120px; }
+}
+
+
+/* ========== Карточки услуг ========== */
+.request-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    padding: 0;
+}
+
+.request-card {
+    background-color: #E7E5EF;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.galaxy-request-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-right: 20px;
+}
+
+.galaxy-request-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.galaxy-request-name {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+    flex: 0 0 150px;
+    text-align: left;
+}
+
+.col.magnitude {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    background-color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.col.distance {
+    display: flex;
+    margin-left: auto;
+    margin-right: 30px;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    background-color: #5e2ec8;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* ========== Кнопка удаление заявки ========== */
+.delete-request-btn {
+    background-color: #5e2ec8; /* красная */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: opacity 0.2s ease;
+}
+
+.delete-request-btn:hover {
+    opacity: 0.8;
+    background-color: #cf049c;
+}
+
+/* Контейнер кнопки удаления заявки, чтобы она была справа от карточек */
+.request-actions {
+    display: flex;
+    justify-content: flex-end;
+    width: 90%;
+    max-width: 800px;
+    margin: 10px auto;
+}
