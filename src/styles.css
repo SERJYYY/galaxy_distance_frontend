@@ -138,7 +138,7 @@ body {
 }
 
 .search-btn:hover {
-    opacity: 0.9;
+    /* opacity: 0.9; */
     background-color: rgb(70, 22, 133);
 }
 

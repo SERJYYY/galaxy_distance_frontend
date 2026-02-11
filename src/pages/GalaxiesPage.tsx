@@ -1,50 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GalaxyList } from "../components/GalaxyList";
 import { Breadcrumbs } from "../components/Breadcrumbs";
-import { mockGalaxies } from "../mock-objects/galaxies"; // <- импортируем моки
+import { getGalaxies } from "../api/galaxiesApi";
+import type { Galaxy } from "../api/galaxiesApi";
+
 
 export const GalaxiesPage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredGalaxies, setFilteredGalaxies] = useState(mockGalaxies);
+  const [galaxies, setGalaxies] = useState<Galaxy[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Функция фильтрации
-  const handleSearch = () => {
-    const filtered = mockGalaxies.filter((galaxy) =>
-      galaxy.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredGalaxies(filtered);
-  };
+  useEffect(() => {
+    const fetchGalaxies = async () => {
+      try {
+        const data = await getGalaxies();
+        setGalaxies(data);
+      } catch (err) {
+        setError("Ошибка загрузки галактик");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Обработчик Enter
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      handleSearch();
-    }
-  };
+    fetchGalaxies();
+  }, []);
+
+  if (loading) return <p>Загрузка...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div>
-      <Breadcrumbs paths={[{ name: "Главная", link: "/" }, { name: "Список галактик" }]} />
+      <Breadcrumbs
+        paths={[{ name: "Главная", link: "/" }, { name: "Список галактик" }]}
+      />
 
       <h1 className="page-title">Список галактик</h1>
 
-      {/* Поиск */}
-      <div className="search-container">
-        <input
-          type="text"
-          className="search-input"
-          placeholder="Поиск по названию"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={handleKeyPress}
-        />
-        <button className="search-btn" onClick={handleSearch}>
-          Найти
-        </button>
-      </div>
-
-      {/* Сетка галактик */}
-      <GalaxyList galaxies={filteredGalaxies} />
+      <GalaxyList galaxies={galaxies} />
     </div>
   );
 };

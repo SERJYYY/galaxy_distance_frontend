@@ -1,29 +1,24 @@
 import React from "react";
 import { GalaxyCard } from "./GalaxyCard";
-
-interface Galaxy {
-    id: number;
-    name: string;
-    image_url?: string;
-}
+import type { Galaxy } from "../api/galaxiesApi";
 
 interface GalaxyListProps {
-    galaxies: Galaxy[];
+  galaxies: Galaxy[];
+  onAdd?: (id: number) => void;
 }
 
-export const GalaxyList: React.FC<GalaxyListProps> = ({ galaxies }) => {
-    return (
-        <section>
-            <div className="galaxy-grid">
-                {galaxies.map(g => (
-                    <GalaxyCard
-                        key={g.id}
-                        {...g}
-                        onAdd={(id) => console.log("Добавлено", id)}
-                    />
-                ))}
-            </div>
-        </section>
-    );
+export const GalaxyList: React.FC<GalaxyListProps> = ({ galaxies, onAdd }) => {
+  return (
+    <div className="galaxy-grid">
+      {galaxies.map((galaxy) => (
+        <GalaxyCard
+          key={galaxy.id}
+          id={galaxy.id}
+          name={galaxy.name}
+          image_url={galaxy.image_url} // здесь передаем URL картинки
+          onAdd={onAdd}
+        />
+      ))}
+    </div>
+  );
 };
-
