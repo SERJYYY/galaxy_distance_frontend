@@ -1,15 +1,18 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
+    host: true,
+    port: 3000,
+    watch: {
+      usePolling: true,
+    },
     proxy: {
       "/api": {
-        target: "http://127.0.0.1:8000",
+        target: "http://web:8000", // имя сервиса Django в docker-compose
         changeOrigin: true,
-        secure: false,
       },
     },
   },
