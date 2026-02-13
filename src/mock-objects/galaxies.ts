@@ -12,7 +12,7 @@ export interface Galaxy {
   name: string;
   magnitude: number;
   distance: number;
-  image?: string;
+  image_url?: string;
   description: string;
 }
 
@@ -22,7 +22,7 @@ export const mockGalaxies: Galaxy[] = [
     name: "M101",
     magnitude: 7.86,
     distance: 6.4,
-    image: m101,
+    image_url: m101,
     description:
       "M101 — это спиральная галактика в созвездии Большой Медведицы, известная своими яркими спиральными рукавами.",
   },
@@ -31,7 +31,7 @@ export const mockGalaxies: Galaxy[] = [
     name: "NGC 3982",
     magnitude: 12.0,
     distance: 17.0,
-    image: ngc3982,
+    image_url: ngc3982,
     description:
       "NGC 3982 — спиральная галактика с активными областями звездообразования в созвездии Большой Медведицы.",
   },
@@ -40,7 +40,7 @@ export const mockGalaxies: Galaxy[] = [
     name: "NGC 4424",
     magnitude: 11.1,
     distance: 16.0,
-    image: ngc4424,
+    image_url: ngc4424,
     description:
       "NGC 4424 — спиральная галактика с нарушенной структурой спиральных рукавов, находящаяся в созвездии Девы.",
   },
@@ -49,7 +49,7 @@ export const mockGalaxies: Galaxy[] = [
     name: "NGC 4526",
     magnitude: 10.2,
     distance: 16.4,
-    image: ngc4526,
+    image_url: ngc4526,
     description:
       "NGC 4526 — линзообразная галактика с заметной пылевой полосой, расположена в созвездии Девы.",
   },
@@ -58,7 +58,7 @@ export const mockGalaxies: Galaxy[] = [
     name: "UGC 9391",
     magnitude: 13.5,
     distance: 20.1,
-    image: "",
+    image_url: "",
     description:
       "UGC 9391 — спиральная галактика малой яркости, изучаемая для определения расстояния по сверхновым типа Ia.",
   },
