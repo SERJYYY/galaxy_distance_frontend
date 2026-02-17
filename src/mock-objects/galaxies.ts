@@ -4,7 +4,7 @@ import m101 from "../assets/m101_vertushka.jpg";
 import ngc3982 from "../assets/NGC_3982.jpg";
 import ngc4424 from "../assets/NGC_4424.jpg";
 import ngc4526 from "../assets/NGC_4526.jpg";
-import ugc9391 from "../assets/UGC_9391.jpg";
+// import ugc9391 from "../assets/UGC_9391.jpg";
 
 
 export interface Galaxy {

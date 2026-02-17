@@ -1,31 +1,22 @@
-# ---------- Stage 1: Development ----------
-FROM node:20-alpine AS development
+# ---------- Development ----------
+FROM node AS development
 
 WORKDIR /app
 
-# Копируем package.json и package-lock.json для установки зависимостей
+# 1️⃣ Копируем только package.json для кэширования npm install
 COPY package*.json ./
 
-# Устанавливаем зависимости
+# 2️⃣ Устанавливаем зависимости
 RUN npm install
 
-# Копируем весь проект
+# 3️⃣ Копируем модель ОТДЕЛЬНО (чтобы npm install не пересобирался)
+# COPY models/ /app/models/
+
+# 4️⃣ Копируем остальной проект
 COPY . .
 
-# Команда для разработки (vite dev server)
-CMD ["npm", "run", "dev"]
+# 5️⃣ Открываем порт vite
+EXPOSE 3000
 
-# ---------- Stage 2: Production ----------
-FROM nginx:alpine AS production
-
-# Удаляем дефолтную конфигурацию nginx
-RUN rm -rf /usr/share/nginx/html/*
-
-# Копируем собранный фронт из стейджа development
-COPY --from=development /app/dist /usr/share/nginx/html
-
-# Пробрасываем порт
-EXPOSE 80
-
-# Запуск nginx
-CMD ["nginx", "-g", "daemon off;"]
+# 6️⃣ Запуск dev сервера
+CMD ["npm", "run", "dev", "--", "--host", "--port", "3000"]

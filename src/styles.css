@@ -1,3 +1,18 @@
+.galaxies-btn {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.galaxies-btn:hover {
+  color: #ffd700; /* например, желтый при наведении */
+}
+
+
 .breadcrumbs {
     padding: 10px 20px;
     font-size: 14px;
