@@ -1,3 +1,1631 @@
+/* ==================== СОЗДАНИЕ ГАЛАКТИКИ ==================== */
+
+.moderator-edit-container {
+  display: flex;
+  gap: 40px;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-image-section {
+  flex: 1;
+  max-width: 350px;
+}
+
+.image-preview-wrapper {
+  width: 100%;
+  height: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #f5f5f7;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.edit-form-section {
+  flex: 2;
+}
+
+.form-input[type="file"] {
+  padding: 8px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+}
+
+textarea.form-input {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.moderator-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.btn-save {
+  padding: 12px 30px;
+  font-size: 16px;
+  border: 2px solid #28a745;
+  background-color: #28a745;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-save:hover:not(:disabled) {
+  background-color: #218838;
+  border-color: #218838;
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-cancel {
+  padding: 12px 30px;
+  font-size: 16px;
+  border: 2px solid #6c757d;
+  background-color: white;
+  color: #6c757d;
+  border-radius: 8px;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-cancel:hover {
+  background-color: #6c757d;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .moderator-edit-container {
+    flex-direction: column;
+  }
+  
+  .edit-image-section {
+    max-width: 100%;
+  }
+  
+  .moderator-actions {
+    flex-direction: column;
+  }
+  
+  .btn-save,
+  .btn-cancel {
+    width: 100%;
+  }
+}
+
+
+
+/* ==================== РЕДАКТИРОВАНИЕ УСЛУГИ (МОДЕРАТОР) ==================== */
+
+.moderator-edit-container {
+  display: flex;
+  gap: 40px;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-image-section {
+  flex: 1;
+  max-width: 350px;
+}
+
+.image-preview-wrapper {
+  width: 100%;
+  height: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #f5f5f7;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.edit-form-section {
+  flex: 2;
+}
+
+.form-input[type="file"] {
+  padding: 8px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+}
+
+textarea.form-input {
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* Кнопки действий модератора */
+.moderator-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.btn-save {
+  padding: 12px 30px;
+  font-size: 16px;
+  border: 2px solid #28a745;
+  background-color: #28a745;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-save:hover:not(:disabled) {
+  background-color: #218838;
+  border-color: #218838;
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-delete {
+  padding: 12px 30px;
+  font-size: 16px;
+  border: 2px solid #dc3545;
+  background-color: white;
+  color: #dc3545;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-delete:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-cancel {
+  padding: 12px 30px;
+  font-size: 16px;
+  border: 2px solid #6c757d;
+  background-color: white;
+  color: #6c757d;
+  border-radius: 8px;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-cancel:hover {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Адаптив для редактора */
+@media (max-width: 768px) {
+  .moderator-edit-container {
+    flex-direction: column;
+  }
+  
+  .edit-image-section {
+    max-width: 100%;
+  }
+  
+  .moderator-actions {
+    flex-direction: column;
+  }
+  
+  .btn-save,
+  .btn-delete,
+  .btn-cancel {
+    width: 100%;
+  }
+}
+
+
+/* ==================== КАРТОЧКИ УСЛУГ В ЧЕРНОВИКЕ ==================== */
+
+.request-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  padding: 0;
+}
+
+.request-card {
+  background-color: #E7E5EF;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.request-card:hover {
+  transform: translateY(-2px);
+}
+
+.galaxy-request-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.galaxy-request-name {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  text-align: left;
+}
+
+/* Поле magnitude */
+.magnitude-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.col.magnitude {
+  width: 120px;
+  padding: 10px 15px;
+  background-color: white;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.col.magnitude:hover {
+  background-color: #f0f0f0;
+}
+
+.magnitude-input {
+  width: 100px;
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 2px solid #5e2ec8;
+  border-radius: 8px;
+  text-align: center;
+  outline: none;
+}
+
+.btn-magnitude-save,
+.btn-magnitude-cancel {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-magnitude-save {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-magnitude-save:hover {
+  opacity: 0.8;
+}
+
+.btn-magnitude-cancel {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-magnitude-cancel:hover {
+  opacity: 0.8;
+}
+
+/* Кнопка удаления галактики */
+.btn-remove-galaxy {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background-color: #dc3545;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-remove-galaxy:hover {
+  opacity: 0.8;
+}
+
+/* Поле телескопа */
+.cart-telescope-field {
+  max-width: 600px;
+  margin: 0 auto 40px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.telescope-input-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.telescope-input-group .form-input {
+  flex: 1;
+}
+
+/* Кнопки действий */
+.cart-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.btn-delete-draft {
+  padding: 12px 30px;
+  font-size: 16px;
+  border: 2px solid #dc3545;
+  background-color: white;
+  color: #dc3545;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-delete-draft:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-submit-request {
+  padding: 12px 30px;
+  font-size: 16px;
+  border: 2px solid #28a745;
+  background-color: #28a745;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-submit-request:hover:not(:disabled) {
+  background-color: #218838;
+  border-color: #218838;
+}
+
+.btn-submit-request:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+/* Пустая корзина */
+.cart-empty-message {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: white;
+  border-radius: 12px;
+  margin: 40px auto;
+  max-width: 600px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cart-empty-message h2 {
+  color: #5e2ec8;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.cart-empty-message p {
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 16px;
+}
+
+/* Адаптив для карточек */
+@media (max-width: 768px) {
+  .request-card {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .galaxy-request-image {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .galaxy-request-name {
+    width: 100%;
+    text-align: center;
+    order: 3;
+  }
+  
+  .magnitude-field {
+    order: 2;
+  }
+  
+  .btn-remove-galaxy {
+    order: 1;
+    margin-left: auto;
+  }
+  
+  .telescope-input-group {
+    flex-direction: column;
+  }
+  
+  .cart-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btn-delete-draft,
+  .btn-submit-request {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+
+
+/* ==================== КАРТОЧКИ УСЛУГ В ЧЕРНОВИКЕ ==================== */
+
+.draft-galaxies-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto 40px;
+}
+
+.draft-galaxy-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 20px;
+  background-color: #E7E5EF;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.draft-galaxy-card:hover {
+  transform: translateY(-2px);
+}
+
+.draft-galaxy-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.draft-galaxy-name {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  text-align: left;
+}
+
+/* Поле magnitude */
+.magnitude-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.magnitude-display {
+  width: 120px;
+  padding: 10px 15px;
+  background-color: white;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.magnitude-display:hover {
+  background-color: #f0f0f0;
+}
+
+.magnitude-input {
+  width: 100px;
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 2px solid #5e2ec8;
+  border-radius: 8px;
+  text-align: center;
+  outline: none;
+}
+
+.btn-magnitude-save,
+.btn-magnitude-cancel {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-magnitude-save {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-magnitude-save:hover {
+  opacity: 0.8;
+}
+
+.btn-magnitude-cancel {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-magnitude-cancel:hover {
+  opacity: 0.8;
+}
+
+/* Кнопка удаления галактики */
+.btn-remove-galaxy {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background-color: #dc3545;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-remove-galaxy:hover {
+  opacity: 0.8;
+}
+
+/* Адаптив для карточек */
+@media (max-width: 768px) {
+  .draft-galaxy-card {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .draft-galaxy-image {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .draft-galaxy-name {
+    width: 100%;
+    text-align: center;
+    order: 3;
+  }
+  
+  .magnitude-field {
+    order: 2;
+  }
+  
+  .btn-remove-galaxy {
+    order: 1;
+    margin-left: auto;
+  }
+}
+
+
+/* ==================== КОРЗИНА (ЧЕРНОВИК) ==================== */
+
+/* Контейнер поля телескопа */
+.cart-telescope-field {
+  max-width: 600px;
+  margin: 0 auto 40px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.telescope-input-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.telescope-input-group .form-input {
+  flex: 1;
+}
+
+/* Колонка действий в таблице */
+.col-actions {
+  width: 80px;
+  text-align: center;
+}
+
+/* Кнопка удаления услуги */
+.btn-remove {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background-color: #dc3545;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-remove:hover {
+  opacity: 0.8;
+}
+
+/* Кнопки действий корзины */
+.cart-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.btn-delete-draft {
+  padding: 12px 30px;
+  font-size: 16px;
+  border: 2px solid #dc3545;
+  background-color: white;
+  color: #dc3545;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-delete-draft:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-submit-request {
+  padding: 12px 30px;
+  font-size: 16px;
+  border: 2px solid #28a745;
+  background-color: #28a745;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-submit-request:hover:not(:disabled) {
+  background-color: #218838;
+  border-color: #218838;
+}
+
+.btn-submit-request:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+/* Пустая корзина */
+.cart-empty-message {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: white;
+  border-radius: 12px;
+  margin: 40px auto;
+  max-width: 600px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cart-empty-message h2 {
+  color: #5e2ec8;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.cart-empty-message p {
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 16px;
+}
+
+/* Адаптив для корзины */
+@media (max-width: 600px) {
+  .telescope-input-group {
+    flex-direction: column;
+  }
+  
+  .cart-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btn-delete-draft,
+  .btn-submit-request {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+
+
+/* ==================== КОРЗИНА (ПЛАВАЮЩАЯ КНОПКА) ==================== */
+/* Плавающая кнопка корзины на странице галактик */
+.calculator-link {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 20px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+}
+
+.calculator-link.cart-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.calculator-link:hover:not(.cart-disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.calculator {
+  width: 50px;
+  height: 50px;
+  display: block;
+}
+
+/* Бейдж со счётчиком */
+.badge {
+  background-color: #5e2ec8;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 5px 12px;
+  border-radius: 20px;
+  min-width: 40px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Текст "Черновик" */
+.cart-text {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Адаптив для корзины */
+@media (max-width: 768px) {
+  .calculator-link {
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 15px;
+  }
+  
+  .calculator {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .badge {
+    font-size: 14px;
+    padding: 4px 10px;
+    min-width: 35px;
+  }
+  
+  .cart-text {
+    font-size: 12px;
+  }
+}
+
+
+/* ==================== ДЕТАЛИ ЗАЯВКИ ==================== */
+
+/* Контейнер таблицы */
+.request-table-container {
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Таблица */
+.request-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Заголовки таблицы */
+.request-table thead {
+  background-color: #5e2ec8;
+  color: white;
+}
+
+.request-table th {
+  padding: 15px 20px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Колонки */
+/* Колонка с изображением */
+.col-image {
+  width: 120px;
+  text-align: center;
+  padding: 10px;
+}
+
+.galaxy-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.galaxy-thumb-placeholder {
+  width: 80px;
+  height: 80px;
+  background-color: #ccc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 10px;
+  text-align: center;
+  padding: 5px;
+}
+
+/* Обновленная ширина колонок */
+.col-name {
+  width: 30%;
+  text-align: left;
+  padding-left: 20px;
+}
+
+.col-magnitude {
+  width: 20%;
+  text-align: center;
+}
+
+.col-distance {
+  width: 20%;
+  text-align: center;
+}
+
+.col-actions {
+  width: 80px;
+  text-align: center;
+}
+
+/* Ячейки таблицы - ОДИН ЦВЕТ ДЛЯ ВСЕХ СТРОК */
+.request-table td {
+  padding: 15px 20px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 15px;
+  color: #333;
+  background-color: white; /* 👈 Все строки белые */
+}
+
+/* 👇 УБРАНО: чередование цветов (nth-child) */
+
+/* Подсветка при наведении */
+.request-table tbody tr:hover {
+  background-color: #f8f9fa; /* 👈 Лёгкая подсветка при наведении */
+}
+
+/* Последняя строка без границы */
+.request-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Адаптив для таблицы */
+@media (max-width: 600px) {
+  .request-table th,
+  .request-table td {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  
+  .col-name {
+    width: 40%;
+    padding-left: 15px;
+  }
+  
+  .col-magnitude,
+  .col-distance {
+    width: 30%;
+  }
+}
+
+/* Информация о модераторе */
+.moderator-info {
+  margin-top: 40px;
+  padding-top: 40px;
+  border-top: 2px solid #e9ecef;
+}
+
+/* Адаптив для заголовка заявки */
+@media (max-width: 768px) {
+  .request-header {
+    flex-direction: column;
+    gap: 20px;
+    padding: 15px;
+  }
+  
+  .header-item {
+    width: 100%;
+    align-items: center;
+  }
+  
+  .tel-name,
+  .date,
+  .status-badge {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Отступ для кнопки назад */
+.mt-4 {
+  margin-top: 2rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+
+
+/* ==================== МОИ ЗАЯВКИ ==================== */
+
+/* Действия с черновиком */
+.draft-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-delete-draft {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: 2px solid #dc3545;
+  background-color: #dc3545;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-delete-draft:hover {
+  background-color: #c82333;
+}
+
+/* Кнопка просмотра заявки */
+.btn-view {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #007bff;
+  color: white;
+  text-decoration: none;
+}
+
+.btn-view:hover {
+  opacity: 0.8;
+}
+
+/* Адаптив для черновика */
+@media (max-width: 576px) {
+  .draft-actions {
+    flex-direction: column;
+  }
+  
+  .btn-delete-draft,
+  .btn-auth {
+    width: 100%;
+  }
+}
+
+
+
+/* ==================== ПАНЕЛЬ МОДЕРАТОРА ==================== */
+
+/* Фильтры */
+.moderator-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 150px;
+  flex: 1;
+}
+
+/* Таблица заявок */
+.requests-table-container {
+  overflow-x: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.requests-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.requests-table th,
+.requests-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.requests-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+
+.requests-table tr:hover {
+  background: #f8f9fa;
+}
+
+/* Бейдж статуса */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+}
+
+/* Кнопки действий */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-complete,
+.btn-reject {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-complete {
+  background: #28a745;
+  color: white;
+}
+
+.btn-complete:hover {
+  opacity: 0.8;
+}
+
+.btn-reject {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-reject:hover {
+  opacity: 0.8;
+}
+
+/* Индикатор polling */
+.polling-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.polling-dot {
+  width: 8px;
+  height: 8px;
+  background: #28a745;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Адаптив для таблицы */
+@media (max-width: 768px) {
+  .moderator-filters {
+    flex-direction: column;
+  }
+  
+  .filter-group {
+    width: 100%;
+  }
+  
+  .requests-table th,
+  .requests-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+
+
+/* ==================== ЛИЧНЫЙ КАБИНЕТ ==================== */
+
+.profile-tabs-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tab-btn-vertical {
+  width: 100%;
+  padding: 12px 20px;
+  background-color: #5e2ec8;
+  border: 2px solid #5e2ec8;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-align: center;
+}
+
+.tab-btn-vertical:hover {
+  background-color: rgb(70, 22, 133);
+}
+
+.tab-btn-vertical.active {
+  background-color: rgb(70, 22, 133);
+  border-color: rgb(70, 22, 133);
+}
+
+/* Успешное сообщение */
+.alert-success {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Подсказка под полем */
+.form-text {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+
+/* Адаптив для форм */
+@media (max-width: 576px) {
+  .profile-tabs {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .tab-btn {
+    width: 100%;
+    text-align: center;
+    border-bottom: none;
+    border-radius: 4px;
+  }
+  
+  .tab-btn.active {
+    background-color: rgba(94, 46, 200, 0.1);
+    border-bottom: none;
+  }
+}
+
+
+/* ==================== АВТОРИЗАЦИЯ (НОВЫЕ СТИЛИ) ==================== */
+
+/* Кнопки входа/регистрации (стиль как у search-btn) */
+.btn-auth {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: 2px solid #5e2ec8;
+  background-color: #5e2ec8;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  font-weight: 500;
+}
+
+.btn-auth:hover {
+  background-color: rgb(184, 152, 226);
+}
+
+.btn-auth:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  background-color: #5e2ec8;
+}
+
+.btn-reg {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: 2px solid #bca2f5;
+  background-color: #bca2f5;
+  color: #5e2ec8;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  font-weight: 500;
+}
+
+.btn-reg:hover {
+  background-color: rgb(127, 50, 228);
+}
+
+.btn-reg:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  background-color: #bca2f5;
+}
+
+/* Кнопка формы на всю ширину (для LoginPage и RegisterPage) */
+.btn-auth-full {
+  width: 100%;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: 2px solid #5e2ec8;
+  background-color: #5e2ec8;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  border: none;
+}
+
+.btn-auth-full:hover:not(:disabled) {
+  background-color: rgb(70, 22, 133);
+}
+
+.btn-auth-full:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  background-color: #5e2ec8;
+}
+
+/* Контейнер формы авторизации */
+.auth-form-container {
+  max-width: 450px;
+  margin: 60px auto;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Заголовок формы */
+.auth-form-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+/* Группа полей формы */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+/* Лейбл формы */
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+/* Поле ввода */
+.form-input {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  border-color: #5e2ec8;
+}
+
+.form-input:hover {
+  border-color: #5e2ec8;
+}
+
+.form-input:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+/* Алерт ошибки */
+.alert-error {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 450px;  /* 👈 Ограничиваем ширину */
+  margin-left: auto;  /* 👈 Центрируем */
+  margin-right: auto; /* 👈 Центрируем */
+}
+
+/* Алерт предупреждения */
+.alert-warning {
+  background-color: #fff3cd;
+  border-color: #ffeeba;
+  color: #856404;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Кнопка закрытия алерта */
+.alert-close {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.5;
+  padding: 0;
+  line-height: 1;
+}
+
+.alert-close:hover {
+  opacity: 1;
+}
+
+/* Текст по центру */
+.text-center {
+  text-align: center;
+}
+
+/* Приглушённый текст */
+.text-muted {
+  color: #6c757d;
+}
+
+/* Отступ сверху */
+.mt-3 {
+  margin-top: 1rem;
+}
+
+/* ==================== НАВБАРА ==================== */
+
+/* Контейнер навигации - горизонтальный ряд */
+.navbar-nav {
+  display: flex;
+  flex-direction: row !important; /* Горизонтально */
+  align-items: center;
+  gap: 1.5rem; /* Отступы между кнопками */
+  margin: 0 2rem;
+  list-style: none;
+  padding: 0;
+}
+
+/* Ссылки навигации - белый текст */
+.nav-link {
+  color: white !important; /* Белый цвет */
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+  font-size: 0.95rem;
+  white-space: nowrap; /* Запрет переноса текста */
+  display: inline-block;
+}
+
+.nav-link.active,
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white !important; /* Остаётся белым */
+}
+
+/* Правая часть — авторизация */
+.auth-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  margin-left: auto; /* Прижимаем вправо */
+}
+
+/* Адаптив для мобильных */
+@media (max-width: 768px) {
+  .top-bar {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  
+  .navbar-nav {
+    flex-direction: column !important; /* На мобильных можно вертикально */
+    width: 100%;
+    margin: 0.5rem 0;
+    order: 3;
+    gap: 0.5rem;
+  }
+  
+  .nav-link {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .auth-section {
+    order: 2;
+    margin-left: auto;
+  }
+}
+
+
 .galaxies-btn {
   background-color: transparent;
   border: none;

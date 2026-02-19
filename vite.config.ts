@@ -7,12 +7,25 @@ export default defineConfig({
     host: true,
     port: 3000,
     watch: {
-      usePolling: true,
+      usePolling: true, // для hot-reload в Docker на Windows
     },
     proxy: {
       "/api": {
-        target: "http://web:8000", // имя сервиса Django в docker-compose
+        target: "http://web:8000", // имя сервиса в docker-compose
         changeOrigin: true,
+        secure: false, // важно для HTTP в dev-режиме
+        // 👇 Критично для cookie-сессий:
+        cookieDomainRewrite: "localhost", // переписывает домен cookie на localhost
+        cookiePathRewrite: "/", // переписывает путь cookie
+        // 👇 Опционально: логирование для отладки
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("→ Proxy:", req.method, req.url);
+          });
+          proxy.on("proxyRes", (proxyRes, req) => {
+            console.log("← Proxy:", proxyRes.statusCode, req.url);
+          });
+        },
       },
     },
   },
