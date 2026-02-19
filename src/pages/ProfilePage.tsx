@@ -270,13 +270,6 @@ export const ProfilePage: React.FC = () => {
         >
           Смена пароля
         </button>
-        <button
-          className="tab-btn-vertical"
-          onClick={handleLogout}
-          style={{ backgroundColor: "#dc3545", borderColor: "#dc3545" }}
-        >
-          Выйти
-        </button>
       </div>
 
       {/* 👇 Сообщения об ошибках/успехе */}

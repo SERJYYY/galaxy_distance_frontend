@@ -1,77 +1,129 @@
 // src/pages/GalaxyDetailPage.tsx
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Breadcrumbs } from "../components/Breadcrumbs";
-import axios from "axios";
-import type { RootState } from "../store";
+import { GalaxyCard } from "../components/GalaxyCard";
+import {
+  fetchGalaxyDetailStart,
+  fetchGalaxyDetailSuccess,
+  fetchGalaxyDetailFailure,
+  fetchGalaxiesStart,
+  fetchGalaxiesSuccess,
+  clearDetail,
+  setCartCount,
+  addToCart,
+} from "../slices/galaxiesSlice";
+import { 
+  getGalaxyDetail, 
+  getGalaxies, 
+  getCartCount, 
+  trackGalaxyView,
+  getRecentlyViewed,  // 👈 Добавлен импорт
+} from "../api/galaxyApi";
+import type { RootState, AppDispatch } from "../store";
+import type { Galaxy } from "../api/Api";
 import galaxyVideo from "../assets/galaxy_video.mp4";
 import defaultImage from "../assets/default_galaxy.png";
 import "../styles.css";
 
-interface Galaxy {
-  id: number;
-  name: string;
-  description: string;
-  image_url?: string;
-  is_active?: boolean;
-}
-
 export const GalaxyDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const { user, isAuthenticated } = useSelector(
+  const { detail: galaxy, detailLoading, detailError, galaxies } = useSelector(
+    (state: RootState) => state.galaxies
+  );
+
+  const { isAuthenticated, user } = useSelector(
     (state: RootState) => state.auth
   );
 
-  const [galaxy, setGalaxy] = useState<Galaxy | null>(null);
   const [similarGalaxies, setSimilarGalaxies] = useState<Galaxy[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [recentlyViewed, setRecentlyViewed] = useState<Galaxy[]>([]); // 👈 State для недавно просмотренных
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // 👇 Загрузка данных галактики через axios
+  // 👇 Загрузка детали галактики через прямой axios (без thunk)
   useEffect(() => {
-    const fetchGalaxy = async () => {
+    const loadGalaxy = async () => {
       if (!id) return;
+      dispatch(fetchGalaxyDetailStart());
       try {
-        setLoading(true);
-        const response = await axios.get<Galaxy>(
-          `http://localhost:8000/api/galaxies/${id}/`,
-          { withCredentials: true }
-        );
-        setGalaxy(response.data);
-        setError(null);
+        const data = await getGalaxyDetail(Number(id));
+        dispatch(fetchGalaxyDetailSuccess(data));
+        
+        // Отслеживаем просмотр
+        if (!isAuthenticated) {
+          await trackGalaxyView(Number(id));
+        }
       } catch (err: any) {
-        setError(err.response?.data?.error || "Ошибка загрузки услуги");
-      } finally {
-        setLoading(false);
+        dispatch(fetchGalaxyDetailFailure(err.response?.data?.error || "Ошибка загрузки"));
       }
     };
-    fetchGalaxy();
-  }, [id]);
+    loadGalaxy();
 
-  // 👇 Загрузка похожих галактик (список всех, затем фильтрация)
+    return () => {
+      dispatch(clearDetail());
+    };
+  }, [dispatch, id, isAuthenticated]);
+
+  // 👇 Загрузка недавно просмотренных (НОВЫЙ useEffect)
   useEffect(() => {
-    const fetchSimilar = async () => {
+    const loadRecentlyViewed = async () => {
+      if (!galaxy?.id || isAuthenticated) return;
+      try {
+        const viewed = await getRecentlyViewed();
+        // Исключаем текущую галактику из списка
+        const filtered = viewed.filter((g: Galaxy) => g.id !== galaxy.id);
+        setRecentlyViewed(filtered.slice(0, 3));
+      } catch (err) {
+        console.error("Ошибка загрузки недавно просмотренных:", err);
+      }
+    };
+    loadRecentlyViewed();
+  }, [galaxy?.id, isAuthenticated]);
+
+  // 👇 Загрузка похожих галактик через прямой axios
+  useEffect(() => {
+    const loadSimilar = async () => {
       if (!galaxy) return;
       try {
-        const response = await axios.get<Galaxy[]>(
-          "http://localhost:8000/api/galaxies/",
-          { withCredentials: true }
-        );
-        // Исключаем текущую галактику и берём первые 3
-        const similar = response.data
-          .filter((g) => g.id !== galaxy.id)
+        let allGalaxies = galaxies;
+        if (allGalaxies.length === 0) {
+          dispatch(fetchGalaxiesStart());
+          const data = await getGalaxies();
+          dispatch(fetchGalaxiesSuccess(data));
+          allGalaxies = data;
+        }
+
+        const similar = allGalaxies
+          .filter((g: Galaxy) => g.id !== galaxy.id)
           .slice(0, 3);
+
         setSimilarGalaxies(similar);
-      } catch (err) {
+      } catch (err: any) {
         console.error("Ошибка загрузки похожих:", err);
       }
     };
-    fetchSimilar();
-  }, [galaxy]);
+    loadSimilar();
+  }, [galaxy, galaxies, dispatch]);
 
-  if (loading) {
+  // 👇 Добавление в черновик (ИСПОЛЬЗУЕТ THUNK + КОДОГЕНЕРАЦИЮ)
+  const handleAddToCart = async () => {
+    if (!galaxy?.id) return;
+    try {
+      await dispatch(addToCart(galaxy.id)).unwrap();
+      setSuccessMessage("Галактика добавлена в черновик!");
+      setTimeout(() => setSuccessMessage(null), 3000);
+      
+      const count = await getCartCount();
+      dispatch(setCartCount(count));
+    } catch (err: any) {
+      console.error("Ошибка добавления в черновик:", err);
+    }
+  };
+
+  if (detailLoading) {
     return (
       <div className="container py-5">
         <Breadcrumbs
@@ -90,7 +142,7 @@ export const GalaxyDetailPage: React.FC = () => {
     );
   }
 
-  if (error || !galaxy) {
+  if (detailError || !galaxy) {
     return (
       <div className="container py-5">
         <Breadcrumbs
@@ -101,7 +153,7 @@ export const GalaxyDetailPage: React.FC = () => {
           ]}
         />
         <div className="not-found-message">
-          <h2>⚠️ {error || "Услуга не найдена"}</h2>
+          <h2>⚠️ {detailError || "Услуга не найдена"}</h2>
           <Link to="/galaxies" className="btn">
             ← Вернуться к списку галактик
           </Link>
@@ -122,7 +174,19 @@ export const GalaxyDetailPage: React.FC = () => {
 
       <h1 className="page-title mb-4">{galaxy.name}</h1>
 
-      {/* Карточка галактики */}
+      {successMessage && (
+        <div className="alert-success" role="alert">
+          <span>{successMessage}</span>
+          <button
+            type="button"
+            className="alert-close"
+            onClick={() => setSuccessMessage(null)}
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       <div className="galaxy-detail-card portrait mb-4">
         <img
           className="galaxy-detail-image"
@@ -136,7 +200,6 @@ export const GalaxyDetailPage: React.FC = () => {
           <p className="lead">{galaxy.description}</p>
         </div>
 
-        {/* 👇 Кнопка редактирования для модератора */}
         {isAuthenticated && user?.is_moderator && (
           <div className="text-center mt-3">
             <Link
@@ -150,7 +213,6 @@ export const GalaxyDetailPage: React.FC = () => {
         )}
       </div>
 
-      {/* Видео под карточкой */}
       <div className="galaxy-video-wrapper mb-5">
         <video
           src={galaxyVideo}
@@ -161,37 +223,40 @@ export const GalaxyDetailPage: React.FC = () => {
           className="galaxy-video"
         />
       </div>
+      
+      {/* 👇 Секция "Недавно просмотренные" */}
+      {!isAuthenticated && recentlyViewed.length > 0 && (
+        <section>
+          <h2 className="mb-4">Недавно просмотренные</h2>
+          <div className="galaxy-grid">
+            {recentlyViewed.map((g) => (
+              <GalaxyCard
+                key={`recent-${g.id}`}
+                id={g.id!}
+                name={g.name}
+                image_url={g.image_url}
+                isAuthenticated={isAuthenticated} // 👈 Передайте пропс
+                onAdd={isAuthenticated ? handleAddToCart : undefined}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* Похожие услуги */}
+      {/* 👇 Секция "Похожие услуги" */}
       {similarGalaxies.length > 0 && (
         <section>
           <h2 className="mb-4">Похожие услуги</h2>
           <div className="galaxy-grid">
             {similarGalaxies.map((g) => (
-              <div key={g.id} className="galaxy-card">
-                {g.image_url ? (
-                  <img
-                    src={g.image_url}
-                    alt={g.name}
-                    className="galaxy-image"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = defaultImage;
-                    }}
-                  />
-                ) : (
-                  <div className="galaxy-image-placeholder">
-                    <span>Нет изображения</span>
-                  </div>
-                )}
-                <h3 className="galaxy-name">{g.name}</h3>
-                <div className="button-group">
-                  <div className="btn-wrapper">
-                    <Link to={`/galaxies/${g.id}`} className="card-btn">
-                      Подробнее
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              <GalaxyCard
+                key={`similar-${g.id}`}
+                id={g.id!}
+                name={g.name}
+                image_url={g.image_url}
+                isAuthenticated={isAuthenticated} // 👈 Передайте пропс
+                onAdd={isAuthenticated ? handleAddToCart : undefined}
+              />
             ))}
           </div>
         </section>

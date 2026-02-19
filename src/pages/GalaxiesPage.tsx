@@ -3,8 +3,16 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Breadcrumbs } from "../components/Breadcrumbs";
-import axios from "axios";
-import { addToCart, fetchCartCount, setSearchQuery, clearError } from "../slices/galaxiesSlice";
+import {
+  fetchGalaxiesStart,
+  fetchGalaxiesSuccess,
+  fetchGalaxiesFailure,
+  setSearchQuery,
+  clearError,
+  setCartCount,
+  addToCart, // 👈 Единственный thunk (добавление в черновик)
+} from "../slices/galaxiesSlice";
+import { getGalaxies, getCartCount } from "../api/galaxyApi"; // 👈 Прямой путь к galaxyApi
 import type { RootState, AppDispatch } from "../store";
 import type { Galaxy } from "../api/Api";
 import cartIcon from "../assets/cart-icon.png";
@@ -18,40 +26,41 @@ export const GalaxiesPage: React.FC = () => {
     (state: RootState) => state.galaxies
   );
 
-  const { user, isAuthenticated } = useSelector(
+  const { isAuthenticated, user } = useSelector(
     (state: RootState) => state.auth
   );
 
   const [searchQuery, setSearchQueryLocal] = useState("");
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // 👇 Загрузка галактик через axios (без кодогенерации)
+  // 👇 Загрузка галактик через прямой axios (БЕЗ thunk)
   useEffect(() => {
-    const fetchGalaxies = async () => {
+    const loadGalaxies = async () => {
+      dispatch(fetchGalaxiesStart());
       try {
-        const response = await axios.get<Galaxy[]>(
-          "http://localhost:8000/api/galaxies/",
-          { withCredentials: true }
-        );
-        // Обновляем Redux state вручную
-        dispatch({ type: "galaxies/fetchGalaxies/fulfilled", payload: response.data });
+        const data = await getGalaxies();
+        dispatch(fetchGalaxiesSuccess(data));
       } catch (err: any) {
-        dispatch({ type: "galaxies/fetchGalaxies/rejected", payload: err.response?.data?.error || "Ошибка загрузки" });
+        dispatch(fetchGalaxiesFailure(err.response?.data?.error || "Ошибка загрузки"));
       }
     };
-    fetchGalaxies();
-    
-    if (isAuthenticated) {
-      dispatch(fetchCartCount());
-    }
-  }, [dispatch, isAuthenticated]);
+    loadGalaxies();
+  }, [dispatch]);
 
-  // 👇 Обновление счётчика корзины
+  // 👇 Загрузка счётчика корзины через прямой axios
   useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(fetchCartCount());
-    }
-  }, [cartCount, isAuthenticated, dispatch]);
+    const loadCartCount = async () => {
+      if (isAuthenticated) {
+        try {
+          const count = await getCartCount();
+          dispatch(setCartCount(count));
+        } catch (err) {
+          console.error("Ошибка загрузки корзины:", err);
+        }
+      }
+    };
+    loadCartCount();
+  }, [isAuthenticated, dispatch]);
 
   // 👇 Обработчик поиска
   const handleSearch = (e: React.FormEvent) => {
@@ -59,18 +68,19 @@ export const GalaxiesPage: React.FC = () => {
     dispatch(setSearchQuery(searchQuery));
   };
 
-  // 👇 Добавление в черновик (используем кодогенерированный API)
+  // 👇 Добавление в черновик (ЕДИНСТВЕННЫЙ метод с thunk + кодогенерацией)
   const handleAddToCart = async (galaxyId: number | undefined, galaxyName: string) => {
-    if (!galaxyId) {
-      dispatch(clearError());
-      return;
-    }
+    if (!galaxyId) return;
     try {
       await dispatch(addToCart(galaxyId)).unwrap();
       setSuccessMessage(`"${galaxyName}" добавлена в черновик!`);
       setTimeout(() => setSuccessMessage(null), 3000);
+      
+      // Обновляем счётчик корзины
+      const count = await getCartCount();
+      dispatch(setCartCount(count));
     } catch (err: any) {
-      // Ошибка уже установлена в slice
+      console.error("Ошибка добавления в черновик:", err);
     }
   };
 
@@ -200,7 +210,7 @@ export const GalaxiesPage: React.FC = () => {
         <Link
           to="/cart"
           className={`calculator-link ${cartCount === 0 ? "cart-disabled" : ""}`}
-          title={cartCount === 0 ? "Нет черновика" : `В черновике: ${cartCount} услуг`}
+          title={cartCount === 0 ? "Нет активной заявки" : `В заявке: ${cartCount} услуг`}
         >
           <img src={cartIcon} alt="Корзина" className="calculator" />
           {cartCount > 0 && (
