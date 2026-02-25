@@ -1,0 +1,21 @@
+{
+  "name": "Galaxy Distance",
+  "short_name": "GalaxyDist",
+  "start_url": "/galaxy_distance_frontend/",
+  "display": "standalone",
+  "background_color": "#0f0f23",
+  "theme_color": "#1a1a3e",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/galaxy_distance_frontend/logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/galaxy_distance_frontend/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

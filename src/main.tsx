@@ -15,3 +15,12 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     </Provider>  {/* 👈 Provider закрыт */}
   </React.StrictMode>
 );
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker
+      .register("/galaxy_distance_frontend/sw.js")  // 👈 Путь с base!
+      .then((_res) => console.log("✅ Service worker registered"))
+      .catch((err) => console.log("❌ Service worker not registered", err));
+  });
+}

@@ -1,3 +1,42 @@
+/* 📱 Адаптивность для мобильных */
+@media (max-width: 768px) {
+  .container { padding: 1rem !important; }
+  .page-title { font-size: 1.5rem !important; text-align: center; }
+  
+  .search-container {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+  .search-input, .search-btn { width: 100% !important; }
+  
+  .galaxy-grid { grid-template-columns: 1fr !important; }
+  .galaxy-card { margin-bottom: 1rem !important; }
+  .galaxy-image { height: 200px !important; object-fit: cover; }
+  
+  .galaxy-detail-card {
+    flex-direction: column !important;
+    text-align: center;
+  }
+  .galaxy-detail-image { max-width: 100% !important; margin-bottom: 1rem !important; }
+  
+  .galaxy-video { width: 100% !important; height: auto !important; }
+  
+  .navbar {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    padding: 0.5rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title { font-size: 1.25rem !important; }
+  .search-input, .search-btn { font-size: 0.9rem !important; }
+  .galaxy-name { font-size: 1rem !important; }
+}
+
+
+
+
 .galaxies-btn {
   background-color: transparent;
   border: none;

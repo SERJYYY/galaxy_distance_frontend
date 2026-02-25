@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/galaxy_distance_frontend",
+  base: "/galaxy_distance_frontend/",
   server: {
     host: true,
     port: 3000,
