@@ -7,12 +7,17 @@ import {
   fetchGalaxiesStart,
   fetchGalaxiesSuccess,
   fetchGalaxiesFailure,
-  setSearchQuery,
   clearError,
   setCartCount,
-  addToCart, // 👈 Единственный thunk (добавление в черновик)
+  addToCart,
 } from "../slices/galaxiesSlice";
-import { getGalaxies, getCartCount } from "../api/galaxyApi"; // 👈 Прямой путь к galaxyApi
+// 👇 Импорт из filtersSlice
+import {
+  setSearchFilter,
+  clearFilters,
+  selectSearchFilter,
+} from "../slices/filtersSlice";
+import { getGalaxies, getCartCount } from "../api/galaxyApi";
 import type { RootState, AppDispatch } from "../store";
 import type { Galaxy } from "../api/Api";
 import cartIcon from "../assets/cart-icon.png";
@@ -22,7 +27,7 @@ import "../styles.css";
 export const GalaxiesPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { galaxies, filteredGalaxies, loading, error, cartCount } = useSelector(
+  const { galaxies, loading, error, cartCount } = useSelector(
     (state: RootState) => state.galaxies
   );
 
@@ -30,24 +35,35 @@ export const GalaxiesPage: React.FC = () => {
     (state: RootState) => state.auth
   );
 
-  const [searchQuery, setSearchQueryLocal] = useState("");
+  // 👇 Получаем поисковый запрос из Redux (вместо локального useState)
+  const searchFilter = useSelector(selectSearchFilter);
+
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // 👇 Загрузка галактик через прямой axios (БЕЗ thunk)
+  // 👇 Загрузка галактик с применением фильтра из Redux
   useEffect(() => {
     const loadGalaxies = async () => {
       dispatch(fetchGalaxiesStart());
       try {
-        const data = await getGalaxies();
+        // 👇 Передаём параметры из Redux
+        const params: Record<string, string> = {};
+        if (searchFilter) {
+          params.search = searchFilter;
+        }
+        
+        const data = await getGalaxies(params);
         dispatch(fetchGalaxiesSuccess(data));
       } catch (err: any) {
         dispatch(fetchGalaxiesFailure(err.response?.data?.error || "Ошибка загрузки"));
       }
     };
-    loadGalaxies();
-  }, [dispatch]);
+    
+    // 👇 Дебаунс: ждём 300мс после изменения фильтра перед запросом
+    const timeoutId = setTimeout(loadGalaxies, 300);
+    return () => clearTimeout(timeoutId);
+  }, [dispatch, searchFilter]);  // 👇 Зависимость от searchFilter из Redux
 
-  // 👇 Загрузка счётчика корзины через прямой axios
+  // 👇 Загрузка счётчика корзины
   useEffect(() => {
     const loadCartCount = async () => {
       if (isAuthenticated) {
@@ -62,13 +78,18 @@ export const GalaxiesPage: React.FC = () => {
     loadCartCount();
   }, [isAuthenticated, dispatch]);
 
-  // 👇 Обработчик поиска
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    dispatch(setSearchQuery(searchQuery));
+  // 👇 Обработчик изменения поиска — обновляет Redux (автоматически сохраняется в localStorage)
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    dispatch(setSearchFilter(value));  // 👇 Обновляем Redux, а не локальный стейт
   };
 
-  // 👇 Добавление в черновик (ЕДИНСТВЕННЫЙ метод с thunk + кодогенерацией)
+  // 👇 Очистка фильтра поиска
+  const handleClearSearch = () => {
+    dispatch(setSearchFilter(""));
+  };
+
+  // 👇 Добавление в черновик
   const handleAddToCart = async (galaxyId: number | undefined, galaxyName: string) => {
     if (!galaxyId) return;
     try {
@@ -76,13 +97,18 @@ export const GalaxiesPage: React.FC = () => {
       setSuccessMessage(`"${galaxyName}" добавлена в черновик!`);
       setTimeout(() => setSuccessMessage(null), 3000);
       
-      // Обновляем счётчик корзины
       const count = await getCartCount();
       dispatch(setCartCount(count));
     } catch (err: any) {
       console.error("Ошибка добавления в черновик:", err);
     }
   };
+
+  // 👇 Фильтрация на фронтенде (опционально, если бэкенд не фильтрует)
+  const filteredGalaxies = galaxies.filter((galaxy: Galaxy) => {
+    if (!searchFilter) return true;
+    return galaxy.name?.toLowerCase().includes(searchFilter.toLowerCase());
+  });
 
   return (
     <div className="container py-5">
@@ -131,16 +157,26 @@ export const GalaxiesPage: React.FC = () => {
         </div>
       )}
 
-      {/* 👇 Поиск */}
-      <form className="search-container" onSubmit={handleSearch}>
+      {/* 👇 Поиск — значение из Redux */}
+      <form className="search-container" onSubmit={(e) => e.preventDefault()}>
         <input
           type="text"
           className="search-input"
           placeholder="Поиск по названию..."
-          value={searchQuery}
-          onChange={(e) => setSearchQueryLocal(e.target.value)}
+          value={searchFilter}  // 👇 Значение из Redux, не локальный стейт
+          onChange={handleSearchChange}  // 👇 Обновляем Redux при вводе
         />
-        <button type="submit" className="search-btn">
+        {searchFilter && (
+          <button
+            type="button"
+            className="search-clear-btn"
+            onClick={handleClearSearch}
+            title="Очистить поиск"
+          >
+            ✕
+          </button>
+        )}
+        <button type="submit" className="search-btn" disabled>
           Найти
         </button>
       </form>
@@ -154,7 +190,12 @@ export const GalaxiesPage: React.FC = () => {
         </div>
       ) : filteredGalaxies.length === 0 ? (
         <div className="alert-warning">
-          <span>Галактики не найдены</span>
+          <span>{searchFilter ? `Ничего не найдено по запросу "${searchFilter}"` : "Галактики не найдены"}</span>
+          {searchFilter && (
+            <button className="btn-link ms-2" onClick={handleClearSearch}>
+              Очистить поиск
+            </button>
+          )}
         </div>
       ) : (
         <div className="galaxy-grid">

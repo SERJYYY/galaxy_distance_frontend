@@ -2,6 +2,9 @@
 import axios from "axios";
 import type { Galaxy } from "../api/Api";
 
+
+const API_BASE_URL = "/api";
+
 // 👇 Утилита для получения CSRF-токена
 function getCsrfToken(): string | null {
   const name = "csrftoken";
@@ -24,12 +27,12 @@ const getHeaders = () => ({
 /**
  * Получить список галактик
  */
-export const getGalaxies = async (search?: string): Promise<Galaxy[]> => {
+export const getGalaxies = async (params?: Record<string, string>): Promise<Galaxy[]> => {
   const response = await axios.get<Galaxy[]>(
-    "/api/galaxies/",  // 👈 ОТНОСИТЕЛЬНЫЙ URL (вместо http://localhost:8000/api/galaxies/)
+    `${API_BASE_URL}/galaxies/`,
     {
       ...getHeaders(),
-      params: search ? { search } : {},
+      params,  // 👇 Передаём search, recently_viewed и другие параметры
     }
   );
   return response.data;

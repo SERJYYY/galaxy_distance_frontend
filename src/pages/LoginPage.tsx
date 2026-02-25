@@ -11,17 +11,8 @@ import {
 } from "../slices/authSlice";
 import type { RootState, AppDispatch } from "../store";
 import type { AuthUser } from "../slices/authSlice";
+import { API_BASE_URL, getApiHeadersWithCsrf, isTauri } from "../utils/apiConfig"; // 👈 Импорт утилит
 import "../styles.css";
-
-// 👇 Утилита для получения CSRF-токена
-function getCsrfToken(): string | null {
-  const name = "csrftoken";
-  const cookieValue = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith(`${name}=`))
-    ?.split("=")[1];
-  return cookieValue || null;
-}
 
 export const LoginPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -52,30 +43,25 @@ export const LoginPage: React.FC = () => {
     dispatch(loginStart());
 
     try {
-      // 👇 Прямой вызов axios (без api.users.usersLoginCreate)
+      // 👇 ИСПРАВЛЕНО: Используем относительный URL + утилиты из apiConfig
       await axios.post(
-        "http://localhost:8000/api/users/login/",
+        `${API_BASE_URL}/users/login/`,  // ✅ Относительный URL для web, прямой для Tauri
         {
           username: formData.username,
           password: formData.password,
         },
         {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-            ...(getCsrfToken() && { "X-CSRFToken": getCsrfToken() }),
-          },
+          withCredentials: !isTauri(),  // ✅ Cookie только для web-версии
+          headers: getApiHeadersWithCsrf(),  // ✅ CSRF только для web
         }
       );
 
       // После успешного входа загружаем профиль
       const profileResponse = await axios.get(
-        "http://localhost:8000/api/users/profile/",
+        `${API_BASE_URL}/users/profile/`,  // ✅ Относительный URL
         {
-          withCredentials: true,
-          headers: {
-            ...(getCsrfToken() && { "X-CSRFToken": getCsrfToken() }),
-          },
+          withCredentials: !isTauri(),
+          headers: getApiHeadersWithCsrf(),
         }
       );
 
