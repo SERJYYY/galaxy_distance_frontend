@@ -14,7 +14,7 @@ export const GalaxyCard: React.FC<GalaxyCardProps> = ({
   id,
   name,
   image_url,
-  onAdd,
+  // onAdd,
 }) => {
   const navigate = useNavigate();
 
@@ -22,9 +22,9 @@ export const GalaxyCard: React.FC<GalaxyCardProps> = ({
     navigate(`/galaxies/${id}`);
   };
 
-  const handleAddClick = () => {
-    if (onAdd) onAdd(id);
-  };
+  // const handleAddClick = () => {
+  //   if (onAdd) onAdd(id);
+  // };
 
   return (
     <article className="galaxy-card">
@@ -38,9 +38,9 @@ export const GalaxyCard: React.FC<GalaxyCardProps> = ({
         <button className="card-btn" onClick={handleDetailsClick}>
           Подробнее
         </button>
-        <button className="card-btn" onClick={handleAddClick}>
+        {/* <button className="card-btn" onClick={handleAddClick}>
           Добавить
-        </button>
+        </button> */}
       </div>
     </article>
   );

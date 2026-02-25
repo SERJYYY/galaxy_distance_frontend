@@ -9,7 +9,7 @@ import { useSearchParams } from "react-router-dom";  // 👈 Убраны про
 import { mockGalaxies } from "../mock-objects/galaxies";
 // 👇 Импорты из Redux
 import { setSearchFilter, clearSearchFilter, selectSearchFilter } from "../slices/filterSlice";
-import type { RootState, AppDispatch } from "../store";
+import type { AppDispatch } from "../store";
 import "../styles.css";
 
 export const GalaxiesPage: React.FC = () => {
@@ -18,7 +18,7 @@ export const GalaxiesPage: React.FC = () => {
   
   const [galaxies, setGalaxies] = useState<Galaxy[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [_searchParams, setSearchParams] = useSearchParams();
   const [localSearchQuery, setLocalSearchQuery] = useState(searchFilter);
 
   const fetchData = async (query: string) => {
