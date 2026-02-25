@@ -1,10 +1,10 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "galaxy_distance_calculation",
+  "productName": "galaxy_distance",
   "version": "0.1.0",
-  "identifier": "com.galaxy.distance",
+  "identifier": "com.tauri.dev",
   "build": {
-    "frontendDist": "../dist",
+    "frontendDist": "../build",
     "devUrl": "http://localhost:3000",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "galaxy_distance_calculation",
+        "title": "Galaxy Distance",
         "width": 800,
         "height": 600,
         "resizable": true,

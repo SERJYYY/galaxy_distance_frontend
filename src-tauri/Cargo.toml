@@ -1,5 +1,5 @@
 [package]
-name = "app"
+name = "galaxy_distance"
 version = "0.1.0"
 description = "A Tauri App"
 authors = ["you"]
