@@ -1,25 +1,26 @@
-import React, { useEffect, useState } from "react";
+// src/pages/GalaxiesPage.tsx
+import React, { useEffect, useState } from "react";  // 👈 Убраны пробелы
+import { useDispatch, useSelector } from "react-redux";  // 👈 Добавлено
 import { GalaxyList } from "../components/GalaxyList";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { getGalaxies } from "../api/galaxiesApi";
 import type { Galaxy } from "../api/galaxiesApi";
-import { useSearchParams } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";  // 👈 Убраны пробелы
 import { mockGalaxies } from "../mock-objects/galaxies";
-
+// 👇 Импорты из Redux
+import { setSearchFilter, clearSearchFilter, selectSearchFilter } from "../slices/filterSlice";
+import type { RootState, AppDispatch } from "../store";
+import "../styles.css";
 
 export const GalaxiesPage: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const searchFilter = useSelector(selectSearchFilter);  // 👇 Из Redux
+  
   const [galaxies, setGalaxies] = useState<Galaxy[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, _setError] = useState<string | null>(null);
-
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchFilter);
 
-  const queryParam = searchParams.get("search") || "";
-  const [searchQuery, setSearchQuery] = useState(queryParam);
-
-  // Загрузка данных с бэка или мока
   const fetchData = async (query: string) => {
     setLoading(true);
     try {
@@ -28,8 +29,7 @@ export const GalaxiesPage: React.FC = () => {
       console.log("Данные с бэка:", data);
       setGalaxies(data);
     } catch (err) {
-      console.warn("Бэк недоступен, используем моки", err);
-
+      console.warn("⚠ Backend недоступен, используем моки", err);
       const filtered = query
         ? mockGalaxies.filter((g) =>
             g.name.toLowerCase().includes(query.toLowerCase())
@@ -43,32 +43,46 @@ export const GalaxiesPage: React.FC = () => {
         image_url: g.image_url || undefined,
       }));
 
-      console.log("Моки после маппинга (image_url проверка):", mapped);
-
+      console.log("Моки после маппинга:", mapped);
       setGalaxies(mapped);
     } finally {
       setLoading(false);
     }
   };
 
+  // 👇 Загрузка при изменении searchFilter из Redux
   useEffect(() => {
-    setSearchQuery(queryParam);
-    fetchData(queryParam);
-  }, [location.search]);
+    setLocalSearchQuery(searchFilter);
+    fetchData(searchFilter);
+  }, [searchFilter]);
 
   const handleSearch = () => {
-    setSearchParams(searchQuery ? { search: searchQuery } : {});
+    dispatch(setSearchFilter(localSearchQuery));  // 👇 Сохраняем в Redux + localStorage
+    setSearchParams(localSearchQuery ? { search: localSearchQuery } : {});
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") handleSearch();
   };
 
-  if (loading) return <p>Загрузка...</p>;
-  if (error) return <p>{error}</p>;
+  const handleClearSearch = () => {
+    setLocalSearchQuery("");
+    dispatch(clearSearchFilter());  // 👇 Очищаем Redux
+    setSearchParams({});
+  };
+
+  if (loading) {
+    return (
+      <div className="container py-5 text-center">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Загрузка...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div>
+    <div className="container py-5">
       <Breadcrumbs
         paths={[
           { name: "Главная", link: "/" },
@@ -79,16 +93,21 @@ export const GalaxiesPage: React.FC = () => {
       <h1 className="page-title">Список галактик</h1>
 
       {/* Поиск */}
-      <div className="search-container">
+      <div className="search-container mb-4">
         <input
           type="text"
           className="search-input"
           placeholder="Поиск по названию"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          value={localSearchQuery}
+          onChange={(e) => setLocalSearchQuery(e.target.value)}
           onKeyPress={handleKeyPress}
         />
-        <button className="search-btn" onClick={handleSearch}>
+        {localSearchQuery && (
+          <button className="search-clear-btn ms-2" onClick={handleClearSearch}>
+            ✕
+          </button>
+        )}
+        <button className="search-btn ms-2" onClick={handleSearch}>
           Найти
         </button>
       </div>

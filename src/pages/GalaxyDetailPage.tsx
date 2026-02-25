@@ -1,24 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+// src/pages/GalaxyDetailPage.tsx
+import React, { useEffect, useState } from "react";  // 👈 Убраны пробелы
+import { useParams, Link } from "react-router-dom";  // 👈 Убраны пробелы
 import { Breadcrumbs } from "../components/Breadcrumbs";
-import { getGalaxyById, getGalaxies } from "../api/galaxiesApi";
+import { getGalaxyById } from "../api/galaxiesApi";  // 👈 Убран getGalaxies
 import type { Galaxy } from "../api/galaxiesApi";
-import { findSimilar } from "../utils/embeddings";
-import galaxyVideo from "../assets/galaxy_video.mp4";
 import defaultImage from "../assets/default_galaxy.png";
-import { GalaxyCard } from "../components/GalaxyCard";
+import "../styles.css";
 
 export const GalaxyDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [galaxy, setGalaxy] = useState<Galaxy | null>(null);
-  const [similarGalaxies, setSimilarGalaxies] = useState<Galaxy[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Загрузка основной галактики
   useEffect(() => {
     const fetchGalaxy = async () => {
       if (!id) return;
+      setLoading(true);
       try {
         const data = await getGalaxyById(Number(id));
         setGalaxy(data);
@@ -31,96 +29,69 @@ export const GalaxyDetailPage: React.FC = () => {
     fetchGalaxy();
   }, [id]);
 
-  // Загрузка похожих галактик
-  useEffect(() => {
-    const fetchSimilar = async () => {
-      if (!galaxy) return;
-      try {
-        const allGalaxies: Galaxy[] = await getGalaxies(); // все галактики
+  // 👇 Секция "Похожие" удалена (требует бэкенд для embeddings)
 
-        // вызываем findSimilar для массива {id, description}
-        const similarItems = await findSimilar(
-          galaxy.description,
-          allGalaxies
-            .filter((g: Galaxy) => g.id !== galaxy.id)
-            .map((g: Galaxy) => ({ id: g.id, description: g.description }))
-        );
-
-        // преобразуем обратно в полный объект Galaxy для карточек
-        const similarFull: Galaxy[] = similarItems
-          .map((item) => allGalaxies.find((g: Galaxy) => g.id === item.id))
-          .filter((g): g is Galaxy => g !== undefined); // TS: фильтруем undefined
-
-        setSimilarGalaxies(similarFull);
-      } catch (err) {
-        console.error("Ошибка поиска похожих:", err);
-      }
-    };
-    fetchSimilar();
-  }, [galaxy]);
-
-  if (loading) return <p>Загрузка...</p>;
-  if (error)
+  if (loading) {
     return (
-      <div>
-        <p>{error}</p>
-        <Link to="/galaxies" className="btn">
-          Вернуться к списку галактик
-        </Link>
-      </div>
-    );
-
-  return (
-    <div>
-      {/* Breadcrumbs */}
-      <Breadcrumbs
-        paths={[
+      <div className="container py-5">
+        <Breadcrumbs paths={[
           { name: "Главная", link: "/" },
           { name: "Список галактик", link: "/galaxies" },
-          { name: galaxy?.name || "" },
-        ]}
-      />
+          { name: "Загрузка..." },
+        ]} />
+        <div className="text-center py-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Загрузка...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-      <h1 className="page-title">{galaxy?.name}</h1>
+  if (error || !galaxy) {
+    return (
+      <div className="container py-5">
+        <Breadcrumbs paths={[
+          { name: "Главная", link: "/" },
+          { name: "Список галактик", link: "/galaxies" },
+          { name: "Ошибка" },
+        ]} />
+        <div className="not-found-message">
+          <h2>⚠️ {error || "Галактика не найдена"}</h2>
+          <Link to="/galaxies" className="btn">← Вернуться к списку</Link>
+        </div>
+      </div>
+    );
+  }
 
-      {/* Карточка галактики */}
-      <div className="galaxy-detail-card portrait">
+  return (
+    <div className="container py-5">
+      <Breadcrumbs paths={[
+        { name: "Главная", link: "/" },
+        { name: "Список галактик", link: "/galaxies" },
+        { name: galaxy.name },
+      ]} />
+
+      <h1 className="page-title mb-4">{galaxy.name}</h1>
+
+      <div className="galaxy-detail-card portrait mb-4">
         <img
           className="galaxy-detail-image"
-          src={galaxy?.image_url || defaultImage}
-          alt={galaxy?.name}
+          src={galaxy.image_url || defaultImage}
+          alt={galaxy.name}
+          onError={(e) => { (e.target as HTMLImageElement).src = defaultImage; }}
         />
-        <div className="description-box">{galaxy?.description}</div>
+        <div className="description-box">
+          <p className="lead">{galaxy.description}</p>
+        </div>
       </div>
 
       {/* Видео под карточкой */}
-      <div className="galaxy-video-wrapper">
-        <video
-          src={galaxyVideo}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="galaxy-video"
-        />
+      <div className="galaxy-video-wrapper mb-5">
+        <video autoPlay muted loop playsInline className="galaxy-video">
+          <source src="../assets/galaxy_video.mp4" type="video/mp4" />
+        </video>
       </div>
-
-      {/* Похожие услуги */}
-      {similarGalaxies.length > 0 && (
-        <section>
-          <h2>Похожие услуги</h2>
-          <div className="galaxy-list">
-            {similarGalaxies.map((g: Galaxy) => (
-              <GalaxyCard
-                key={g.id}
-                id={g.id}
-                name={g.name}
-                image_url={g.image_url}
-              />
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 };

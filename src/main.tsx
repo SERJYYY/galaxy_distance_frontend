@@ -1,11 +1,19 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import 'bootstrap/dist/css/bootstrap.min.css'
+// src/main.tsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { Provider } from "react-redux";
+import { store } from "./store";
+import { BrowserRouter } from "react-router-dom";
+import App from './App';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "./styles.css";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>  {/* 👈 Provider открыт */}
+      <BrowserRouter>          {/* 👈 Router для локалхоста */}
+        <App />                {/* 👈 App рендерится внутри */}
+      </BrowserRouter>
+    </Provider>                {/* 👈 Provider закрыт */}
   </React.StrictMode>
-)
+);
