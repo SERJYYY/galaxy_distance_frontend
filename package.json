@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:web": "tsc && vite build --outDir dist",
+    "build:tauri": "tsc && vite build --outDir build",
     "lint": "eslint .",
     "tauri": "tauri",
     "preview": "vite preview",

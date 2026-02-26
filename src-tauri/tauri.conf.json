@@ -2,12 +2,12 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "galaxy_distance",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.galaxydistance.app",
   "build": {
     "frontendDist": "../build",
     "devUrl": "http://localhost:3000",
     "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build"
+    "beforeBuildCommand": "npm run build:tauri"
   },
   "app": {
     "windows": [
@@ -19,10 +19,18 @@
         "fullscreen": false
       }
     ],
+    "withGlobalTauri": true,
     "security": {
-      "csp": null
+      "csp": "default-src 'self' http://10.43.164.209:8000; img-src 'self' http://10.43.164.209:8000 data: blob:; connect-src 'self' http://10.43.164.209:8000; script-src 'self'; style-src 'self' 'unsafe-inline';"
     }
   },
+
+  "plugins": {
+    "http": {
+      "enabled": true
+    }
+  },
+
   "bundle": {
     "active": true,
     "targets": "all",

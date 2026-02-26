@@ -1,47 +1,38 @@
+// src/components/GalaxyCard.tsx
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import defaultGalaxy from "../assets/default_galaxy.png";
+import { Link } from "react-router-dom";
+import defaultImage from "../assets/default_galaxy.png";
+import { dest_img, dest_api } from "../utils/target_config";
 import "../styles.css";
 
 interface GalaxyCardProps {
   id: number;
   name: string;
-  image_url?: string; // URL изображения из MinIO
-  onAdd?: (id: number) => void;
+  image_url?: string;
 }
 
-export const GalaxyCard: React.FC<GalaxyCardProps> = ({
-  id,
-  name,
-  image_url,
-  // onAdd,
-}) => {
-  const navigate = useNavigate();
-
-  const handleDetailsClick = () => {
-    navigate(`/galaxies/${id}`);
-  };
-
-  // const handleAddClick = () => {
-  //   if (onAdd) onAdd(id);
-  // };
+export const GalaxyCard: React.FC<GalaxyCardProps> = ({ id, name, image_url }) => {
+  // 👇 Исправляем URL картинки для Tauri
+  const fixedImageUrl = image_url
+    ? image_url.replace("/img-proxy", dest_img).replace("/api", dest_api)
+    : undefined;
 
   return (
-    <article className="galaxy-card">
+    <div className="galaxy-card">
       <img
         className="galaxy-image"
-        src={image_url || defaultGalaxy} // если нет URL, используем дефолтное изображение
+        src={fixedImageUrl || defaultImage}
         alt={name}
+        onError={(e) => {
+          (e.target as HTMLImageElement).src = defaultImage;
+        }}
       />
-      <h2 className="galaxy-name">{name}</h2>
-      <div className="button-group">
-        <button className="card-btn" onClick={handleDetailsClick}>
-          Подробнее
-        </button>
-        {/* <button className="card-btn" onClick={handleAddClick}>
-          Добавить
-        </button> */}
-      </div>
-    </article>
+      <h3 className="galaxy-name">{name}</h3>
+      
+      {/* 👇 Явная кнопка "Подробнее" */}
+      <Link to={`/galaxies/${id}`} className="card-btn">
+        Подробнее
+      </Link>
+    </div>
   );
 };

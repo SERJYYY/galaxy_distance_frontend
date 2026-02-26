@@ -1,6 +1,6 @@
 // src/api/galaxiesApi.ts
 import { mockGalaxies } from "../mock-objects/galaxies";
-import { API_BASE_URL, isTauri } from "../utils/apiConfig";  // 👇 Новый импорт
+import { dest_api } from "../utils/target_config";  // 👇 Новый импорт
 
 export interface Galaxy {
   id: number;
@@ -15,10 +15,8 @@ export const getGalaxies = async (filterName?: string): Promise<Galaxy[]> => {
   const params = new URLSearchParams();
   if (filterName) params.append("search", filterName);
 
-  // 👇 Для Tauri используем прямой URL, для веба — прокси
-  const url = isTauri 
-    ? `${API_BASE_URL}/galaxies/?${params.toString()}`
-    : `/api/galaxies/?${params.toString()}`;
+  // 👇 Используем dest_api вместо хардкода
+  const url = `${dest_api}/galaxies/?${params.toString()}`;
 
   try {
     const response = await fetch(url);
@@ -38,9 +36,7 @@ export const getGalaxies = async (filterName?: string): Promise<Galaxy[]> => {
 };
 
 export const getGalaxyById = async (id: number): Promise<Galaxy> => {
-  const url = isTauri 
-    ? `${API_BASE_URL}/galaxies/${id}/`
-    : `/api/galaxies/${id}/`;
+  const url = `${dest_api}/galaxies/${id}/`;
 
   try {
     const response = await fetch(url);
