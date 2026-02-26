@@ -19,7 +19,7 @@ import {
   getGalaxies, 
   getCartCount, 
   trackGalaxyView,
-  // getRecentlyViewed,  // 👈 ЗАКОММЕНТИРОВАНО: не используется
+  getRecentlyViewed,
 } from "../api/galaxyApi";
 import type { RootState, AppDispatch } from "../store";
 import type { Galaxy } from "../api/Api";
@@ -40,7 +40,7 @@ export const GalaxyDetailPage: React.FC = () => {
   );
 
   const [similarGalaxies, setSimilarGalaxies] = useState<Galaxy[]>([]);
-  // const [recentlyViewed, setRecentlyViewed] = useState<Galaxy[]>([]); // 👈 ЗАКОММЕНТИРОВАНО: state для недавно просмотренных
+  const [recentlyViewed, setRecentlyViewed] = useState<Galaxy[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // 👇 Загрузка детали галактики через прямой axios (без thunk)
@@ -67,8 +67,8 @@ export const GalaxyDetailPage: React.FC = () => {
     };
   }, [dispatch, id, isAuthenticated]);
 
-  // 👇 ЗАКОММЕНТИРОВАНО: Загрузка недавно просмотренных
-  /*
+  
+ 
   useEffect(() => {
     const loadRecentlyViewed = async () => {
       if (!galaxy?.id || isAuthenticated) return;
@@ -83,7 +83,7 @@ export const GalaxyDetailPage: React.FC = () => {
     };
     loadRecentlyViewed();
   }, [galaxy?.id, isAuthenticated]);
-  */
+
 
   // 👇 Загрузка похожих галактик через прямой axios
   useEffect(() => {
@@ -226,8 +226,8 @@ export const GalaxyDetailPage: React.FC = () => {
         />
       </div>
       
-      {/* 👇 ЗАКОММЕНТИРОВАНО: Секция "Недавно просмотренные" */}
-      {/*
+      {/*  Секция "Недавно просмотренные" */}
+      
       {!isAuthenticated && recentlyViewed.length > 0 && (
         <section>
           <h2 className="mb-4">Недавно просмотренные</h2>
@@ -245,7 +245,7 @@ export const GalaxyDetailPage: React.FC = () => {
           </div>
         </section>
       )}
-      */}
+     
 
       {/* 👇 Секция "Похожие услуги" */}
       {similarGalaxies.length > 0 && (

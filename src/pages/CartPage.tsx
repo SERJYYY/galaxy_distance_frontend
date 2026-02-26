@@ -188,6 +188,7 @@ export const CartPage: React.FC = () => {
         <Breadcrumbs
           paths={[
             { name: "Главная", link: "/" },
+            { name: "Список галактик", link: "/galaxies" },
             { name: "Корзина" },
           ]}
         />

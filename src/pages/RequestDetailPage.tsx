@@ -79,7 +79,7 @@ export const RequestDetailPage: React.FC = () => {
   // 👇 Статусы для отображения
   const statusLabels: Record<string, string> = {
     submitted: "На проверке",
-    completed: "Одобрена",
+    completed: "Завершена",
     rejected: "Отклонена",
   };
 
