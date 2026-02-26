@@ -1,13 +1,14 @@
+// src/pages/ModeratorPage.tsx
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { api } from "../api";
 import type { RootState } from "../store";
-import type { GalaxyRequestList } from "../api/Api"; // 👈 Импортируем тип из API
+import type { GalaxyRequestList } from "../api/Api";
 import "../styles.css";
 
-// 👇 Используем тип из API + расширяем если нужно
+// 👇 Тип заявки с расширениями
 type Request = GalaxyRequestList & {
   galaxies?: Array<{
     id: number;
@@ -37,7 +38,7 @@ export const ModeratorPage: React.FC = () => {
   const [creatorFilter, setCreatorFilter] = useState("");
 
   // 👇 Short polling интервал
-  const POLLING_INTERVAL = 5000; // 5 секунд
+  const POLLING_INTERVAL = 5000;
 
   // 👇 Проверка прав модератора
   useEffect(() => {
@@ -66,18 +67,16 @@ export const ModeratorPage: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // 👇 Фильтрация на фронтенде (по создателю)
+  // 👇 Фильтрация на фронтенде
   useEffect(() => {
     let filtered = [...requests];
 
-    // Фильтр по создателю (фронтенд)
     if (creatorFilter) {
       filtered = filtered.filter((req) =>
         req.creator?.toLowerCase().includes(creatorFilter.toLowerCase())
       );
     }
 
-    // Фильтр по дате
     if (dateFrom) {
       const fromDate = new Date(dateFrom);
       filtered = filtered.filter((req) => {
@@ -97,7 +96,6 @@ export const ModeratorPage: React.FC = () => {
       });
     }
 
-    // Фильтр по статусу
     if (statusFilter) {
       filtered = filtered.filter((req) => req.status === statusFilter);
     }
@@ -108,13 +106,16 @@ export const ModeratorPage: React.FC = () => {
   // 👇 Обновление статуса заявки
   const handleStatusChange = async (requestId: number, action: "complete" | "rejected") => {
     try {
-      // 👇 Преобразуем number в string
       await api.galaxyRequests.galaxyRequestsCompleteUpdate(String(requestId), { action });
-      // Обновляем список сразу после изменения
       await fetchRequests();
     } catch (err: any) {
       setError(err.response?.data?.error || "Ошибка обновления статуса");
     }
+  };
+
+  // 👇 НОВЫЙ МЕТОД: Переход к деталям заявки (использует существующий RequestDetailPage)
+  const handleViewRequest = (requestId: number) => {
+    navigate(`/requests/${requestId}`);
   };
 
   // 👇 Статусы для отображения
@@ -262,22 +263,18 @@ export const ModeratorPage: React.FC = () => {
                     </span>
                   </td>
                   <td>
-                    {req.status === "submitted" && (
-                      <div className="action-buttons">
-                        <button
-                          className="btn-complete"
-                          onClick={() => handleStatusChange(req.id!, "complete")}
-                        >
-                          ✓
-                        </button>
-                        <button
-                          className="btn-reject"
-                          onClick={() => handleStatusChange(req.id!, "rejected")}
-                        >
-                          ✗
-                        </button>
-                      </div>
-                    )}
+                    <div className="action-buttons">
+                      {/* 👇 КНОПКА ПРОСМОТРА ДЕТАЛЕЙ */}
+                      <button
+                        className="btn-view"
+                        onClick={() => handleViewRequest(req.id!)}
+                        title="Просмотреть детали заявки"
+                      >
+                        👁 
+                      </button>
+                      
+                     
+                    </div>
                   </td>
                 </tr>
               ))}

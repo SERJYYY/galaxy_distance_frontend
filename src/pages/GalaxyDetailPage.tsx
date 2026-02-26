@@ -259,7 +259,12 @@ export const GalaxyDetailPage: React.FC = () => {
                 name={g.name}
                 image_url={g.image_url}
                 isAuthenticated={isAuthenticated}
-                onAdd={isAuthenticated ? handleAddToCart : undefined}
+                isModerator={user?.is_moderator}
+                onAdd={
+                  isAuthenticated && !user?.is_moderator  // 👇 onAdd только для НЕ-модераторов
+                    ? handleAddToCart
+                    : undefined
+                }
               />
             ))}
           </div>

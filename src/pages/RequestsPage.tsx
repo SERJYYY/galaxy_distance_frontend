@@ -1,3 +1,4 @@
+// src/pages/RequestsPage.tsx
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
@@ -42,11 +43,11 @@ export const RequestsPage: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  // 👇 Загрузка заявок (ТОЛЬКО ПРИ ЗАХОДЕ НА СТРАНИЦУ)
+  // 👇 Загрузка заявок
   const fetchRequests = async () => {
     try {
       const response = await api.galaxyRequests.galaxyRequestsList();
-      // 👇 Фильтруем черновики и удалённые на фронтенде (дополнительная защита)
+      // 👇 Фильтруем черновики и удалённые
       const filtered = response.data.filter(
         (req) => req.status !== "draft" && req.status !== "deleted"
       );
@@ -59,15 +60,19 @@ export const RequestsPage: React.FC = () => {
     }
   };
 
-  // 👇 Initial load — БЕЗ polling (только при загрузке страницы)
+  // 👇 Initial load
   useEffect(() => {
     fetchRequests();
-    // 👇 Убрали setInterval — polling больше нет
   }, []);
 
   // 👇 Фильтрация на фронтенде
   useEffect(() => {
     let filtered = [...requests];
+
+    // 👇 Обычные пользователи видят ТОЛЬКО свои заявки
+    if (!user?.is_moderator) {
+      filtered = filtered.filter((req) => req.creator === user?.username);
+    }
 
     // Фильтр по дате
     if (dateFrom) {
@@ -89,13 +94,23 @@ export const RequestsPage: React.FC = () => {
       });
     }
 
-    // Фильтр по статусу (только submitted, completed, rejected)
+    // Фильтр по статусу
     if (statusFilter) {
       filtered = filtered.filter((req) => req.status === statusFilter);
     }
 
     setFilteredRequests(filtered);
-  }, [requests, dateFrom, dateTo, statusFilter]);
+  }, [requests, user, dateFrom, dateTo, statusFilter]);
+
+  // 👇 Определяем, модератор ли это
+  const isModerator = user?.is_moderator === true;
+
+  // 👇 Динамические заголовки и breadcrumbs
+  const pageTitle = isModerator ? "Панель модератора" : "Мои заявки";
+  const breadcrumbsPaths = [
+    { name: "Главная", link: "/" },
+    { name: pageTitle },
+  ];
 
   // 👇 Статусы для отображения
   const statusLabels: Record<string, string> = {
@@ -116,14 +131,9 @@ export const RequestsPage: React.FC = () => {
 
   return (
     <div className="container py-5">
-      <Breadcrumbs
-        paths={[
-          { name: "Главная", link: "/" },
-          { name: "Мои заявки" },
-        ]}
-      />
+      <Breadcrumbs paths={breadcrumbsPaths} />
 
-      <h1 className="auth-form-title">Мои заявки</h1>
+      <h1 className="auth-form-title">{pageTitle}</h1>
 
       {/* 👇 Сообщения об ошибках */}
       {error && (
@@ -199,7 +209,9 @@ export const RequestsPage: React.FC = () => {
         </div>
       ) : filteredRequests.length === 0 ? (
         <div className="alert-warning">
-          <span>Заявок не найдено</span>
+          <span>
+            {isModerator ? "Заявок не найдено" : "У вас пока нет заявок"}
+          </span>
         </div>
       ) : (
         <div className="requests-table-container">
@@ -207,6 +219,8 @@ export const RequestsPage: React.FC = () => {
             <thead>
               <tr>
                 <th>ID</th>
+                {/* 👇 Колонка "Создатель" только для модераторов */}
+                {isModerator && <th>Создатель</th>}
                 <th>Телескоп</th>
                 <th>Дата формирования</th>
                 <th>Статус</th>
@@ -217,6 +231,8 @@ export const RequestsPage: React.FC = () => {
               {filteredRequests.map((req) => (
                 <tr key={req.id}>
                   <td>#{req.id}</td>
+                  {/* 👇 Показываем создателя только модераторам */}
+                  {isModerator && <td>{req.creator || "—"}</td>}
                   <td>{req.telescope || "—"}</td>
                   <td>{req.submitted_at || "—"}</td>
                   <td>
@@ -229,12 +245,15 @@ export const RequestsPage: React.FC = () => {
                   </td>
                   <td>
                     <div className="action-buttons">
+                      {/* 👇 Кнопка просмотра — для всех */}
                       <Link
                         to={`/requests/${req.id}`}
                         className="btn-view"
+                        title="Просмотреть детали"
                       >
                         👁
                       </Link>
+                      {/* 👇 Нет кнопок одобрения/отклонения — они на странице деталей */}
                     </div>
                   </td>
                 </tr>
@@ -243,8 +262,6 @@ export const RequestsPage: React.FC = () => {
           </table>
         </div>
       )}
-
-      {/* 👇 Убрали индикатор polling — он больше не нужен */}
     </div>
   );
 };

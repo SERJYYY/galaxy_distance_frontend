@@ -1,3 +1,4 @@
+// src/pages/RequestDetailPage.tsx
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams, useNavigate, Link } from "react-router-dom";
@@ -25,8 +26,8 @@ type RequestDetail = GalaxyRequestList & {
 export const RequestDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
-  const { isAuthenticated } = useSelector(
+  
+  const { isAuthenticated, user } = useSelector(
     (state: RootState) => state.auth
   );
 
@@ -64,10 +65,21 @@ export const RequestDetailPage: React.FC = () => {
     }
   }, [id]);
 
+  // 👇 Обновление статуса (только для модераторов)
+  const handleStatusChange = async (action: "complete" | "rejected") => {
+    if (!id) return;
+    try {
+      await api.galaxyRequests.galaxyRequestsCompleteUpdate(id, { action });
+      navigate("/moderator");  // 👈 Возврат в панель модератора
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Ошибка обновления статуса");
+    }
+  };
+
   // 👇 Статусы для отображения
   const statusLabels: Record<string, string> = {
     submitted: "На проверке",
-    completed: "Выполнена",
+    completed: "Одобрена",
     rejected: "Отклонена",
   };
 
@@ -77,6 +89,26 @@ export const RequestDetailPage: React.FC = () => {
     rejected: "#dc3545",
   };
 
+  // 👇 Определяем, модератор ли это
+  const isModerator = user?.is_moderator === true;
+
+  // 👇 Динамические breadcrumbs в зависимости от роли
+  const breadcrumbsPaths = isModerator
+    ? [
+        { name: "Главная", link: "/" },
+        { name: "Панель модератора", link: "/moderator" },
+        { name: `Заявка #${request?.id || id}` },
+      ]
+    : [
+        { name: "Главная", link: "/" },
+        { name: "Мои заявки", link: "/requests" },
+        { name: `Заявка #${request?.id || id}` },
+      ];
+
+  // 👇 Кнопка возврата в зависимости от роли
+  const backLink = isModerator ? "/moderator" : "/requests";
+  const backText = isModerator ? "← Вернуться к панели модератора" : "← Вернуться к списку заявок";
+
   if (!isAuthenticated) {
     return null;
   }
@@ -84,13 +116,7 @@ export const RequestDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className="container py-5">
-        <Breadcrumbs
-          paths={[
-            { name: "Главная", link: "/" },
-            { name: "Мои заявки", link: "/requests" },
-            { name: "Заявка #" + id },
-          ]}
-        />
+        <Breadcrumbs paths={breadcrumbsPaths} />
         <div className="text-center py-5">
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Загрузка...</span>
@@ -103,17 +129,11 @@ export const RequestDetailPage: React.FC = () => {
   if (error || !request) {
     return (
       <div className="container py-5">
-        <Breadcrumbs
-          paths={[
-            { name: "Главная", link: "/" },
-            { name: "Мои заявки", link: "/requests" },
-            { name: "Заявка #" + id },
-          ]}
-        />
+        <Breadcrumbs paths={breadcrumbsPaths} />
         <div className="not-found-message">
           <h2>⚠️ {error || "Заявка не найдена"}</h2>
-          <Link to="/requests" className="btn">
-            Вернуться к списку заявок
+          <Link to={backLink} className="btn">
+            {backText}
           </Link>
         </div>
       </div>
@@ -122,13 +142,7 @@ export const RequestDetailPage: React.FC = () => {
 
   return (
     <div className="container py-5">
-      <Breadcrumbs
-        paths={[
-          { name: "Главная", link: "/" },
-          { name: "Мои заявки", link: "/requests" },
-          { name: `Заявка #${request.id}` },
-        ]}
-      />
+      <Breadcrumbs paths={breadcrumbsPaths} />
 
       <h1 className="auth-form-title">Заявка #{request.id}</h1>
 
@@ -148,6 +162,10 @@ export const RequestDetailPage: React.FC = () => {
 
       {/* 👇 Заголовок заявки */}
       <div className="request-header">
+        <div className="header-item">
+          <strong>Создатель</strong>
+          <span className="tel-name">{request.creator || "—"}</span>
+        </div>
         <div className="header-item">
           <strong>Телескоп</strong>
           <span className="tel-name">{request.telescope || "—"}</span>
@@ -214,10 +232,28 @@ export const RequestDetailPage: React.FC = () => {
         </div>
       )}
 
+      {/* 👇 Кнопки действий для модератора (только для заявок "На проверке") */}
+      {isModerator && request.status === "submitted" && (
+        <div className="mt-4 action-buttons">
+          <button
+            className="btn-complete"
+            onClick={() => handleStatusChange("complete")}
+          >
+            ✓
+          </button>
+          <button
+            className="btn-reject"
+            onClick={() => handleStatusChange("rejected")}
+          >
+            ✗
+          </button>
+        </div>
+      )}
+
       {/* 👇 Кнопка назад */}
       <div className="text-center mt-4">
-        <Link to="/requests" className="btn-home">
-          ← Вернуться к списку заявок
+        <Link to={backLink} className="btn-home">
+          {backText}
         </Link>
       </div>
     </div>

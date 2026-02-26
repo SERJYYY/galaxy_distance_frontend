@@ -10,6 +10,7 @@ interface GalaxyCardProps {
   image_url?: string; // URL изображения из MinIO
   onAdd?: (id: number) => void;
   isAuthenticated?: boolean;
+  isModerator?: boolean;  // 👇 Новый проп для проверки роли
 }
 
 export const GalaxyCard: React.FC<GalaxyCardProps> = ({
@@ -18,6 +19,7 @@ export const GalaxyCard: React.FC<GalaxyCardProps> = ({
   image_url,
   onAdd,
   isAuthenticated = false,
+  isModerator = false,  // 👇 По умолчанию false
 }) => {
   const navigate = useNavigate();
 
@@ -26,7 +28,7 @@ export const GalaxyCard: React.FC<GalaxyCardProps> = ({
   };
 
   const handleAddClick = () => {
-    if (onAdd && isAuthenticated) onAdd(id);
+    if (onAdd && isAuthenticated && !isModerator) onAdd(id);  // 👇 Проверка на модератора
   };
 
   return (
@@ -45,7 +47,8 @@ export const GalaxyCard: React.FC<GalaxyCardProps> = ({
         <button className="card-btn" onClick={handleDetailsClick}>
           Подробнее
         </button>
-        {isAuthenticated && (
+        {/* 👇 Кнопка "Добавить" только для НЕ-модераторов */}
+        {isAuthenticated && !isModerator && (
           <button className="card-btn" onClick={handleAddClick}>
             Добавить
           </button>

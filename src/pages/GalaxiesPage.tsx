@@ -14,7 +14,6 @@ import {
 // 👇 Импорт из filtersSlice
 import {
   setSearchFilter,
-  clearFilters,
   selectSearchFilter,
 } from "../slices/filtersSlice";
 import { getGalaxies, getCartCount } from "../api/galaxyApi";
@@ -230,7 +229,8 @@ export const GalaxiesPage: React.FC = () => {
                   </Link>
                 </div>
 
-                {isAuthenticated && (
+                {/* 👇 Кнопка "Добавить" только для НЕ-модераторов */}
+                {isAuthenticated && !user?.is_moderator && (
                   <div className="btn-wrapper">
                     <button
                       className="card-btn"
@@ -246,8 +246,8 @@ export const GalaxiesPage: React.FC = () => {
         </div>
       )}
 
-      {/* 👇 Плавающая кнопка корзины */}
-      {isAuthenticated && (
+      {/* 👇 Плавающая кнопка корзины — ТОЛЬКО для НЕ-модераторов */}
+      {isAuthenticated && !user?.is_moderator && (
         <Link
           to="/cart"
           className={`calculator-link ${cartCount === 0 ? "cart-disabled" : ""}`}

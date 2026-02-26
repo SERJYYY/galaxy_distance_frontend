@@ -67,12 +67,16 @@ export const Navbar: React.FC = () => {
           Список галактик
         </Link>
 
-        {isAuthenticated && (
+        {isAuthenticated && !user?.is_moderator && (
           <>
             <Link
               to="/requests"
               className={`nav-link ${
-                location.pathname.startsWith("/requests") ? "active" : ""
+                // 👇 НЕ подсвечивать, если модератор на странице заявки
+                location.pathname.startsWith("/requests") && 
+                !location.pathname.startsWith("/galaxy_requests")
+                  ? "active"
+                  : ""
               }`}
             >
               Мои заявки
@@ -103,7 +107,7 @@ export const Navbar: React.FC = () => {
               </li>
               {user?.is_moderator && (
                 <li>
-                  <Link className="dropdown-item" to="/moderator">
+                  <Link className="dropdown-item" to="/requests">
                     Панель модератора
                   </Link>
                 </li>

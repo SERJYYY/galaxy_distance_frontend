@@ -1,3 +1,45 @@
+/* Контейнер для кнопок */
+.action-buttons {
+  display: flex;             /* Выстраивает элементы в ряд */
+  justify-content: center;   /* Центрирует кнопки по горизонтали */
+  gap: 1rem;                 /* Расстояние между кнопками (вместо margin) */
+  margin-top: 1rem;          /* Аналог mt-4 */
+}
+
+/* Общие стили для кнопок (чтобы не дублировать код) */
+.btn-reject,
+.btn-complete {
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  
+  /* Важно для того, чтобы кнопка была по ширине текста */
+  display: inline-block;     
+  white-space: nowrap;       /* Запрещает перенос текста на новую строку */
+  width: 50px;               /* Гарантирует, что ширина зависит от контента */
+}
+
+/* Индивидуальные цвета */
+.btn-reject {
+  background: #dc3545;
+}
+
+.btn-reject:hover {
+  background: #c82333; /* Пример ховер-эффекта */
+}
+
+.btn-complete {
+  background: #28a745;
+}
+
+.btn-complete:hover {
+  background: #218838; /* Пример ховер-эффекта */
+}
+
+
 /* ==================== НЕДАВНО ПРОСМОТРЕННЫЕ ==================== */
 
 /* Заголовок секции */
