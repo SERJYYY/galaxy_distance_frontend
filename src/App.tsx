@@ -13,6 +13,7 @@ import { RequestDetailPage } from "./pages/RequestDetailPage";
 import { CartPage } from "./pages/CartPage";
 import { GalaxyDetailModeratorPage } from "./pages/GalaxyDetailModeratorPage";
 import { GalaxyCreatePage } from "./pages/GalaxyCreatePage";
+import { GalaxyVibesPage } from "./pages/GalaxyVibesPage";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/galaxies" element={<GalaxiesPage />} />
         <Route path="/galaxies/create" element={<GalaxyCreatePage />} />
         <Route path="/galaxies/:id" element={<GalaxyDetailPage />} />
+        <Route path="/galaxy-vibes/:id" element={<GalaxyVibesPage />} />
         <Route path="/galaxies/:id/edit" element={<GalaxyDetailModeratorPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

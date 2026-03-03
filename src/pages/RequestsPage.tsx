@@ -1,14 +1,14 @@
 // src/pages/RequestsPage.tsx
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { api } from "../api";
 import type { RootState } from "../store";
 import type { GalaxyRequestList } from "../api/Api";
 import "../styles.css";
 
-// 👇 Тип заявки
+// 👇 Тип заявки (наследуем из API + расширяем)
 type Request = GalaxyRequestList & {
   galaxies?: Array<{
     id: number;
@@ -16,14 +16,21 @@ type Request = GalaxyRequestList & {
     magnitude: number;
     distance: number;
   }>;
+  calculated_galaxy_count?: string;
 };
 
 export const RequestsPage: React.FC = () => {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
+
+  // 👇 Флаг загрузки пользователя — защита от race condition
+  const isUserLoading = !user || user.username === undefined || user.username === "";
+
+  // 👇 Определяем модератора ТОЛЬКО после полной загрузки user
+  const isModerator = user?.is_moderator === true && !isUserLoading;
 
   // 👇 Состояния для заявок
   const [requests, setRequests] = useState<Request[]>([]);
@@ -43,13 +50,26 @@ export const RequestsPage: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  // 👇 Отладочный лог — можно убрать после тестов
+  useEffect(() => {
+    console.log("🔄 RequestsPage render", {
+      pathname: location.pathname,
+      username: user?.username,
+      is_moderator: user?.is_moderator,
+      isModerator: isModerator,
+      isUserLoading: isUserLoading,
+      timestamp: new Date().toISOString()
+    });
+  }, [location.pathname, user, isModerator, isUserLoading]);
+
   // 👇 Загрузка заявок
   const fetchRequests = async () => {
+    setLoading(true);
     try {
       const response = await api.galaxyRequests.galaxyRequestsList();
       // 👇 Фильтруем черновики и удалённые
       const filtered = response.data.filter(
-        (req) => req.status !== "draft" && req.status !== "deleted"
+        (req: GalaxyRequestList) => req.status !== "draft" && req.status !== "deleted"
       );
       setRequests(filtered);
       setError(null);
@@ -60,21 +80,22 @@ export const RequestsPage: React.FC = () => {
     }
   };
 
-  // 👇 Initial load
+  // 👇 Initial load + перезагрузка при навигации
   useEffect(() => {
     fetchRequests();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   // 👇 Фильтрация на фронтенде
   useEffect(() => {
     let filtered = [...requests];
 
     // 👇 Обычные пользователи видят ТОЛЬКО свои заявки
-    if (!user?.is_moderator) {
-      filtered = filtered.filter((req) => req.creator === user?.username);
+    if (!isModerator && user?.username) {
+      filtered = filtered.filter((req) => req.creator === user.username);
     }
 
-    // Фильтр по дате
+    // Фильтр по дате "с"
     if (dateFrom) {
       const fromDate = new Date(dateFrom);
       filtered = filtered.filter((req) => {
@@ -84,6 +105,7 @@ export const RequestsPage: React.FC = () => {
       });
     }
 
+    // Фильтр по дате "по"
     if (dateTo) {
       const toDate = new Date(dateTo);
       toDate.setHours(23, 59, 59, 999);
@@ -100,10 +122,7 @@ export const RequestsPage: React.FC = () => {
     }
 
     setFilteredRequests(filtered);
-  }, [requests, user, dateFrom, dateTo, statusFilter]);
-
-  // 👇 Определяем, модератор ли это
-  const isModerator = user?.is_moderator === true;
+  }, [requests, user, isModerator, dateFrom, dateTo, statusFilter]);
 
   // 👇 Динамические заголовки и breadcrumbs
   const pageTitle = isModerator ? "Панель модератора" : "Мои заявки";
@@ -125,12 +144,20 @@ export const RequestsPage: React.FC = () => {
     rejected: "#dc3545",
   };
 
-  if (!isAuthenticated) {
-    return null;
+  // 👇 Блокируем рендер, пока не загрузились auth и user
+  if (!isAuthenticated || isUserLoading) {
+    return (
+      <div className="container py-5 text-center">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Загрузка профиля...</span>
+        </div>
+      </div>
+    );
   }
 
+  // 👇 КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: key включает pathname + username + isModerator для стабильного ре-маунта
   return (
-    <div className="container py-5">
+    <div className="container py-5" key={`${location.pathname}-${user?.username}-${isModerator}`}>
       <Breadcrumbs paths={breadcrumbsPaths} />
 
       <h1 className="auth-form-title">{pageTitle}</h1>
@@ -149,7 +176,7 @@ export const RequestsPage: React.FC = () => {
         </div>
       )}
 
-      {/* 👇 Фильтры */}
+      {/* 👇 Фильтры — показываем всем, но модератор видит больше данных */}
       <div className="moderator-filters">
         <div className="filter-group">
           <label className="form-label">Дата с</label>
@@ -218,42 +245,47 @@ export const RequestsPage: React.FC = () => {
           <table className="requests-table">
             <thead>
               <tr>
-                <th>ID</th>
-                {/* 👇 Колонка "Создатель" только для модераторов */}
-                {isModerator && <th>Создатель</th>}
-                <th>Телескоп</th>
-                <th>Дата формирования</th>
-                <th>Статус</th>
-                <th>Действия</th>
+                <th className="col-id">ID</th>
+                {isModerator && <th className="col-creator">Создатель</th>}
+                <th className="col-telescope">Телескоп</th>
+                <th className="col-submitted">Дата формирования</th>
+                <th className="col-status">Статус</th>
+                {/* 👇 Колонка "Рассчитано галактик" — всегда рендерится, но модератор видит все значения */}
+                <th className="col-calculated">Рассчитано галактик</th>
+                <th className="col-actions">Действия</th>
               </tr>
             </thead>
             <tbody>
               {filteredRequests.map((req) => (
                 <tr key={req.id}>
-                  <td>#{req.id}</td>
-                  {/* 👇 Показываем создателя только модераторам */}
-                  {isModerator && <td>{req.creator || "—"}</td>}
-                  <td>{req.telescope || "—"}</td>
-                  <td>{req.submitted_at || "—"}</td>
-                  <td>
-                    <span
-                      className="status-badge"
+                  <td className="col-id">#{req.id}</td>
+                  {isModerator && <td className="col-creator">{req.creator || "—"}</td>}
+                  <td className="col-telescope">{req.telescope || "—"}</td>
+                  <td className="col-submitted">{req.submitted_at || "—"}</td>
+                  <td className="col-status">
+                    <span 
+                      className="status-badge" 
                       style={{ backgroundColor: statusColors[req.status || "submitted"] }}
+                      title={req.status}
                     >
                       {statusLabels[req.status || "submitted"]}
                     </span>
                   </td>
-                  <td>
+                  {/* 👇 Поле calculated_galaxy_count — с защитой от undefined */}
+                  <td className="col-calculated">
+                    <span className="calculated-count">
+                      {req.calculated_galaxy_count ?? 0}
+                    </span>
+                  </td>
+                  <td className="col-actions">
                     <div className="action-buttons">
-                      {/* 👇 Кнопка просмотра — для всех */}
-                      <Link
-                        to={`/requests/${req.id}`}
-                        className="btn-view"
+                      <Link 
+                        to={`/requests/${req.id}`} 
+                        className="btn-view" 
                         title="Просмотреть детали"
                       >
                         👁
                       </Link>
-                      {/* 👇 Нет кнопок одобрения/отклонения — они на странице деталей */}
                     </div>
                   </td>
                 </tr>

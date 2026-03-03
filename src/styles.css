@@ -1,3 +1,412 @@
+/* ========================================
+   🎬 Galaxy Vibes Page — Светлая тема
+   ======================================== */
+
+/* Контейнер с видео */
+.vibes-container-light {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: calc(100vh - 300px);
+  min-height: 500px;
+  margin: 0 auto 20px;
+  overflow: hidden;
+  background: #f8f9fa;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Видео 9:16 */
+.video-wrapper-light {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.vibes-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 9 / 16;
+  display: block;
+}
+
+/* Кнопка Play/Pause */
+.play-pause-btn-light {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  color: #333;
+  font-size: 1.5rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-wrapper-light:hover .play-pause-btn-light {
+  opacity: 1;
+}
+
+.play-pause-btn-light:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  background: #fff;
+}
+
+/* 👇 Нижняя панель с названием и описанием */
+.description-panel-light {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 20px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  cursor: pointer;
+  transition: transform 0.3s ease, max-height 0.3s ease;
+  z-index: 30;
+  max-height: 40%;
+  overflow: hidden;
+  border-top: 1px solid #e9ecef;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.description-panel-light.expanded {
+  max-height: 85%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #dee2e6 transparent;
+}
+
+.description-panel-light.expanded::-webkit-scrollbar {
+  width: 4px;
+}
+
+.description-panel-light.expanded::-webkit-scrollbar-thumb {
+  background: #dee2e6;
+  border-radius: 2px;
+}
+
+.panel-handle-light {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+  padding-top: 4px;
+}
+
+.handle-bar-light {
+  width: 40px;
+  height: 4px;
+  background: #dee2e6;
+  border-radius: 2px;
+  transition: background 0.3s;
+}
+
+.description-panel-light:hover .handle-bar-light {
+  background: #adb5bd;
+}
+
+.panel-content-light {
+  margin-bottom: 16px;
+}
+
+/* 👇 Название галактики жирным */
+.panel-galaxy-name-light {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+  color: #212529;
+  line-height: 1.3;
+}
+
+/* 👇 Описание */
+.panel-description-light {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #495057;
+  margin: 0 0 16px;
+  white-space: pre-wrap;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.panel-description-light:hover {
+  color: #212529;
+}
+
+/* 👇 Статистика */
+.vibes-stats-light {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.stat-item-light {
+  background: #f8f9fa;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+/* Навигация */
+.navigation-buttons-light {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+  gap: 10px;
+}
+
+.nav-btn-light {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #495057;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  flex: 1;
+  max-width: 140px;
+}
+
+.nav-btn-light:hover:not(:disabled) {
+  background: #e9ecef;
+  transform: translateY(-1px);
+  border-color: #adb5bd;
+}
+
+.nav-btn-light:disabled,
+.nav-btn-light.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  background: #f8f9fa;
+}
+
+.next-btn-light {
+  margin-left: auto;
+}
+
+.counter-light {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+  min-width: 60px;
+  text-align: center;
+}
+
+/* Футер */
+.vibes-footer-light {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 12px 20px 20px;
+  flex-wrap: wrap;
+}
+
+.vibes-footer-light .btn-home,
+.vibes-footer-light .btn-outline {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+}
+
+.vibes-footer-light .btn-outline {
+  background: transparent;
+  border: 1px solid #dee2e6;
+  color: #495057;
+}
+
+.vibes-footer-light .btn-outline:hover {
+  background: #f8f9fa;
+  color: #212529;
+}
+
+/* 📱 Адаптивность */
+@media (max-width: 768px) {
+  .vibes-container-light {
+    height: calc(100vh - 280px);
+    min-height: 450px;
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  .panel-galaxy-name-light {
+    font-size: 1.15rem;
+  }
+
+  .panel-description-light {
+    font-size: 0.9rem;
+  }
+
+  .nav-btn-light {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  .counter-light {
+    font-size: 0.85rem;
+  }
+
+  .vibes-footer-light {
+    padding-bottom: 15px;
+  }
+}
+
+@media (max-width: 400px) {
+  .vibes-container-light {
+    height: calc(100vh - 260px);
+    min-height: 400px;
+  }
+
+  .panel-galaxy-name-light {
+    font-size: 1.05rem;
+  }
+
+  .vibes-stats-light {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .navigation-buttons-light {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nav-btn-light {
+    width: 100%;
+    max-width: none;
+  }
+
+  .counter-light {
+    order: -1;
+    margin-bottom: 4px;
+  }
+}
+
+/* 🖥️ Десктоп */
+@media (min-width: 769px) {
+  .vibes-container-light:hover .play-pause-btn-light {
+    opacity: 1;
+  }
+}
+
+
+/* ========================================
+   🎬 Кнопка "Смотреть Galaxy Vibes"
+   (вынесена отдельно для повторного использования)
+   ======================================== */
+
+.btn-vibes {
+  background: linear-gradient(45deg, #ff6b6b, #feca57);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-vibes:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+  color: #fff;
+}
+
+.btn-vibes:active {
+  transform: translateY(0);
+}
+
+/* Адаптивность кнопки */
+@media (max-width: 768px) {
+  .btn-vibes {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 20px;
+    font-size: 1rem;
+  }
+}
+
+
+
+/* Колонка "Рассчитано галактик" */
+.requests-table .col-calculated {
+  min-width: 140px;
+  text-align: center;
+  white-space: nowrap;
+  background: #f8f9fa;
+}
+
+.requests-table .calculated-count {
+  font-weight: 600;
+  color: #28a745;
+  background: #e9ecef;
+  padding: 4px 12px;
+  border-radius: 6px;
+  display: inline-block;
+  min-width: 30px;
+}
+
+/* Остальные колонки (по классам, а не по позиции) */
+.requests-table .col-id {
+  min-width: 60px;
+  font-weight: 600;
+}
+
+.requests-table .col-creator {
+  min-width: 120px;
+}
+
+.requests-table .col-telescope {
+  min-width: 150px;
+}
+
+.requests-table .col-submitted {
+  min-width: 140px;
+  white-space: nowrap;
+}
+
+.requests-table .col-status {
+  min-width: 110px;
+  text-align: center;
+}
+
+.requests-table .col-actions {
+  min-width: 60px;
+  text-align: center;
+}
+
+.requests-table .col-actions .action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
 /* Контейнер для кнопок */
 .action-buttons {
   display: flex;             /* Выстраивает элементы в ряд */

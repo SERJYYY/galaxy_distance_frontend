@@ -215,6 +215,16 @@ export const GalaxyDetailPage: React.FC = () => {
         )}
       </div>
 
+      {/* 👇 Кнопка Galaxy Vibes — использует вынесенный класс btn-vibes */}
+      <div className="text-center mb-4">
+        <Link
+          to={`/galaxy-vibes/${galaxy.id}`}
+          className="btn-vibes"
+        >
+          🎬 Смотреть Galaxy Vibes
+        </Link>
+      </div>
+
       <div className="galaxy-video-wrapper mb-5">
         <video
           src={galaxyVideo}
