@@ -23,7 +23,7 @@ import {
 } from "../api/galaxyApi";
 import type { RootState, AppDispatch } from "../store";
 import type { Galaxy } from "../api/Api";
-import galaxyVideo from "../assets/galaxy_video.mp4";
+//import galaxyVideo from "../assets/galaxy_video.mp4";
 import defaultImage from "../assets/default_galaxy.png";
 import "../styles.css";
 
@@ -225,7 +225,7 @@ export const GalaxyDetailPage: React.FC = () => {
         </Link>
       </div>
 
-      <div className="galaxy-video-wrapper mb-5">
+      {/* <div className="galaxy-video-wrapper mb-5">
         <video
           src={galaxyVideo}
           autoPlay
@@ -234,7 +234,7 @@ export const GalaxyDetailPage: React.FC = () => {
           playsInline
           className="galaxy-video"
         />
-      </div>
+      </div> */}
       
       {/*  Секция "Недавно просмотренные" */}
       

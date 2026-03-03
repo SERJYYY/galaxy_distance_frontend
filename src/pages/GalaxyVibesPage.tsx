@@ -1,10 +1,10 @@
 // src/pages/GalaxyVibesPage.tsx
 import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { api } from "../api";
-import type { RootState } from "../store";
+
 import type { Galaxy as ApiGalaxy } from "../api/Api";
 import galaxyVideo from "../assets/galaxy_video.mp4";
 import "../styles.css";
@@ -18,7 +18,7 @@ export type Galaxy = ApiGalaxy & {
 export const GalaxyVibesPage: React.FC = () => {
   const { id: initialGalaxyId } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+ 
   
   const [currentGalaxy, setCurrentGalaxy] = useState<Galaxy | null>(null);
   const [allGalaxies, setAllGalaxies] = useState<Galaxy[]>([]);
@@ -255,12 +255,12 @@ export const GalaxyVibesPage: React.FC = () => {
             </p>
 
             {/* 👇 Статистика */}
-            <div className="vibes-stats-light">
+            {/*<div className="vibes-stats-light">
               {currentGalaxy.distance && (
                 <span className="stat-item-light">📏 {currentGalaxy.distance} Мпк</span>
               )}
               <span className="stat-item-light">⭐ ID: {currentGalaxy.id}</span>
-            </div>
+            </div>*/}
           </div>
 
           {/* 👇 Навигация */}
